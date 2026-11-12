@@ -140,3 +140,4 @@ INSERT INTO public.audit_logs (id, user_id, action, details)
 VALUES
   ('aud_1', 'usr_admin', 'SYSTEM_BOOTSTRAP', 'Bankitis Online Banking Engine initialized on Supabase PostgreSQL.')
 ON CONFLICT (id) DO NOTHING;
+

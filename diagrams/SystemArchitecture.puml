@@ -5,7 +5,7 @@ skinparam componentStyle rectangle
 skinparam roundcorner 10
 skinparam shadowing true
 
-package "Tier 1: Presentation Layer (Browser Client)" #AliceBlue {
+package "Tier 1: Presentation Layer (Browser Client / Cloudflare Pages)" #AliceBlue {
   [Customer Dashboard UI] as ClientDash
   [Send Money (UPI Flow) UI] as ClientTransfer
   [Beneficiary & Directory UI] as ClientBeneficiary
@@ -13,50 +13,41 @@ package "Tier 1: Presentation Layer (Browser Client)" #AliceBlue {
   [Executive Bank Admin Console (/admin)] as AdminConsole
 }
 
-package "Tier 2: Business Logic & Application Layer (Next.js Server)" #LightCyan {
-  [HTTP-Only Cookie Session Middleware] as AuthMiddleware
-  [Route Handlers & Server Actions] as ServerActions
-  [Core Banking Transfer Engine] as BankingEngine
-  [Admin Services & Account Freeze] as AdminService
-  [6-Digit PIN & Password Hasher (bcrypt)] as CryptoService
-  [Notification & Alert Dispatcher] as NotifService
+package "Tier 2: Business Logic & Application Layer (Banking Engine)" #LightCyan {
+  [Authentication & Session Guard] as AuthModule
+  [Atomic Transfer Controller] as TransferController
+  [Core Banking Engine (Limits & Verification)] as BankingEngine
+  [Admin Services (Freeze & Adjustments)] as AdminService
+  [6-Digit PIN Security Validator] as PinValidator
+  [Notification & Alert Center] as NotifService
 }
 
-package "Tier 3: Data & Persistence Layer (PostgreSQL Database)" #Lavender {
-  [Prisma ORM (Schema Engine)] as Prisma
-  database "PostgreSQL Relational DB" as Postgres {
+package "Tier 3: Data & Persistence Layer (Cloud PostgreSQL / Supabase)" #Lavender {
+  database "PostgreSQL Database (Supabase Cloud)" as Postgres {
     folder "Relational Tables" {
-      [User Table]
-      [Account Table (SELECT FOR UPDATE)]
-      [Transaction Ledger Table]
-      [Beneficiary Table]
-      [Notification Table]
-      [Immutable AuditLog Table]
+      [public.users]
+      [public.accounts]
+      [public.transactions]
+      [public.beneficiaries]
+      [public.notifications]
+      [public.audit_logs]
     }
   }
+  [Local Persistence Engine (HTML5 Storage)] as LocalStorage
 }
 
-cloud "External Services" {
-  [Resend / SMTP Email Service] as EmailService
-}
+ClientDash --> AuthModule : User Interaction
+ClientTransfer --> TransferController : Submit Payment
+ClientBeneficiary --> BankingEngine : Directory Lookup
+ClientExport --> BankingEngine : Export Statement
+AdminConsole --> AdminService : Role: ADMIN
 
-ClientDash --> AuthMiddleware : HTTPS / Session Cookie
-ClientTransfer --> AuthMiddleware : HTTPS / Signed Payload
-ClientBeneficiary --> AuthMiddleware : HTTPS
-ClientExport --> AuthMiddleware : HTTPS / Stream
-AdminConsole --> AuthMiddleware : HTTPS / Role: ADMIN
-
-AuthMiddleware --> ServerActions
-ServerActions --> BankingEngine
-ServerActions --> AdminService
-ServerActions --> CryptoService
-
-BankingEngine --> Prisma : Atomic Transaction ($transaction)
-AdminService --> Prisma : Update Status / Adjust Balance
-BankingEngine --> NotifService : Emit Event
-
-Prisma --> Postgres : TCP / SQL with Row-Level Locking
-NotifService --> EmailService : Transactional Alerts
+TransferController --> PinValidator : Validate 6-Digit PIN
+TransferController --> BankingEngine : Verify Balances & Limits
+BankingEngine --> Postgres : Live SQL / Cloud API
+BankingEngine --> LocalStorage : Atomic Commit
+AdminService --> Postgres : Live Status Update
+BankingEngine --> NotifService : Emit Transfer Events
 
 @enduml
 

@@ -55,3 +55,4 @@ export function saveSupabaseCredentials(url, key) {
     lastUsedConfig = '';
   }
 }
+

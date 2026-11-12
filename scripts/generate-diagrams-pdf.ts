@@ -133,7 +133,7 @@ async function generateDiagramsPdf() {
   const archData = [
     ['Tier 1: Presentation Layer', 'React 19, Tailwind CSS, Vite, Minimal FinTech UI, Admin Console (/admin), PDF & CSV Statement Exporters.'],
     ['Tier 2: Business Logic Layer', 'Pure React Banking Engine, Idempotent Transaction Controller, PIN Validation & Lockout, In-App Notifications.'],
-    ['Tier 3: Data & Persistence Layer', 'Cloudflare Pages edge hosting, persistent local state engine with strict schema specification, Immutable Audit Logs.'],
+    ['Tier 3: Data & Persistence Layer', 'Cloud PostgreSQL (Supabase) with live table synchronization, client storage fallback, and Immutable Audit Logs.'],
   ];
 
   autoTable(doc, {
