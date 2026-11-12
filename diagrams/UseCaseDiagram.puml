@@ -1,5 +1,5 @@
 @startuml UseCaseDiagram
-title Team-9 Banking Management System - UML Use Case Diagram
+title Bankitis Online Banking System - UML Use Case Diagram
 
 left to right direction
 skinparam packageStyle rectangle
@@ -10,7 +10,7 @@ actor "Bank Customer" as Customer #LightSkyBlue
 actor "Bank Administrator" as Admin #MistyRose
 actor "Core Banking Engine" as System #HoneyDew
 
-rectangle "Team-9 Banking Management System" {
+rectangle "Bankitis Online Banking System" {
   usecase "Authenticate / Sign In" as UC_Auth
   usecase "View Available Balance & Details" as UC_Balance
   usecase "Execute Money Transfer (UPI)" as UC_Transfer

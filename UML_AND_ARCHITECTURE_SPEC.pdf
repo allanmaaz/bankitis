@@ -10,7 +10,7 @@
 endobj
 4 0 obj
 <<
-/Length 12415
+/Length 12401
 >>
 stream
 0.5670000000000001 w
@@ -23,13 +23,13 @@ BT
 20.6999999999999993 TL
 1. g
 39.6850393700787407 796.5356692913385359 Td
-(TEAM-9 BANKING MANAGEMENT SYSTEM) Tj
+(BANKITIS ONLINE BANKING SYSTEM) Tj
 ET
 BT
 /F1 10 Tf
 11.5 TL
 1. g
-39.6850393700787407 771.0238582677164914 Td
+39.6850393700787407 773.8585039370078675 Td
 (UML DIAGRAMS & SYSTEM ARCHITECTURE SPECIFICATION) Tj
 ET
 BT
@@ -37,7 +37,7 @@ BT
 9.1999999999999993 TL
 1. g
 39.6850393700787407 754.0159842519684616 Td
-(Coursework Documentation • StarUML / Rational Rose / PlantUML Standard) Tj
+(Team: Mohammed Maaz • Devika • Vivek • Apoorva • imthebest) Tj
 ET
 BT
 /F2 12 Tf
@@ -681,7 +681,7 @@ endobj
 endobj
 6 0 obj
 <<
-/Length 8919
+/Length 8696
 >>
 stream
 0.5670000000000001 w
@@ -752,7 +752,7 @@ BT
 9.1999999999999993 TL
 0.314 g
 188.8188976377953168 719.5907874015747439 Td
-(Customer inputs target UPI ID \(e.g. priya@bank\) or picks from saved beneficiaries.) Tj
+(Customer inputs target UPI ID \(e.g. devika@bank\) or picks from saved beneficiaries.) Tj
 ET
 1. g
 0.78 G
@@ -778,7 +778,7 @@ BT
 9.1999999999999993 TL
 0.314 g
 188.8188976377953168 696.2175590551180449 Td
-(Asynchronous DB query checks if account exists and is ACTIVE. Prevents self-transfer.) Tj
+(Asynchronous query checks if account exists and is ACTIVE. Prevents self-transfer.) Tj
 ET
 0.96 g
 0.78 G
@@ -804,7 +804,7 @@ BT
 9.1999999999999993 TL
 0.314 g
 188.8188976377953168 672.8443307086613459 Td
-(Question 42 compliance: Displays verified recipient name \(Priya Sharma\) in green.) Tj
+(Compliance verification: Displays verified recipient name \(Devika\) in real time.) Tj
 ET
 1. g
 0.78 G
@@ -882,7 +882,7 @@ BT
 9.1999999999999993 TL
 0.314 g
 188.8188976377953168 602.7246456692912489 Td
-(Customer enters 6-digit PIN. Salted bcrypt validation. 3 failed attempts lock account for 15 mins.) Tj
+(Customer enters 6-digit PIN. Salted validation. 3 failed attempts lock account for 15 mins.) Tj
 ET
 0.96 g
 0.78 G
@@ -895,7 +895,7 @@ BT
 9.1999999999999993 TL
 0.314 g
 47.086614173228341 579.3514173228345499 Td
-(Step 7: ACID Row-Level Lock) Tj
+(Step 7: Atomic Lock Check) Tj
 ET
 0.96 g
 0.78 G
@@ -908,7 +908,7 @@ BT
 9.1999999999999993 TL
 0.314 g
 188.8188976377953168 579.3514173228345499 Td
-(Executes SELECT FOR UPDATE on Account rows in deterministic order to prevent race conditions.) Tj
+(Executes atomic check on accounts in deterministic order to prevent race conditions.) Tj
 ET
 1. g
 0.78 G
@@ -986,7 +986,7 @@ BT
 9.1999999999999993 TL
 0.314 g
 188.8188976377953168 509.2317322834645097 Td
-(Emits in-app notifications and email alerts. Displays success receipt with reference ID.) Tj
+(Emits in-app notifications. Displays success receipt with reference ID.) Tj
 ET
 0. G
 0.5670000000000001 w
@@ -1059,14 +1059,14 @@ BT
 9.1999999999999993 TL
 0.314 g
 204.4094488188976584 418.5482677165354062 Td
-(Next.js 16 \(App Router\), React 19, Tailwind CSS v4, Accessible Dialogs, Responsive Dashboard,) Tj
-T* (Admin Console \(/admin\), PDF/CSV Statement Exporters.) Tj
+(React 19, Tailwind CSS, Vite, Minimal FinTech UI, Admin Console \(/admin\), PDF & CSV) Tj
+T* (Statement Exporters.) Tj
 ET
 1. g
 0.78 G
 0.2834645669291339 w
 1. g
-40. 398.4443307086613686 155.9055118110236435 -44.6078740157480311 re
+40. 398.4443307086613686 155.9055118110236435 -35.4078740157480283 re
 B
 BT
 /F2 8 Tf
@@ -1079,43 +1079,42 @@ ET
 0.78 G
 0.2834645669291339 w
 1. g
-195.9055118110236435 398.4443307086613686 360.0000000000000568 -44.6078740157480311 re
+195.9055118110236435 398.4443307086613686 360.0000000000000568 -35.4078740157480283 re
 B
 BT
 /F1 8 Tf
 9.1999999999999993 TL
 0.314 g
 204.4094488188976584 383.1403937007873992 Td
-(Next.js Server Actions, Zod input validation, JOSE JWT session tokens \(HTTP-only secure) Tj
-T* (cookies\), bcryptjs password & 6-digit PIN hashing, Core Banking atomic engine, Notification) Tj
-T* (dispatcher.) Tj
+(Pure React Banking Engine, Idempotent Transaction Controller, PIN Validation & Lockout, In-App) Tj
+T* (Notifications.) Tj
 ET
 1. g
 0.78 G
 0.2834645669291339 w
 1. g
-40. 353.836456692913373 155.9055118110236435 -35.4078740157480283 re
+40. 363.0364566929133616 155.9055118110236435 -35.4078740157480283 re
 B
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 0.314 g
-48.5039370078740077 338.5325196850394036 Td
+48.5039370078740077 347.7325196850393922 Td
 (Tier 3: Data & Persistence Layer) Tj
 ET
 1. g
 0.78 G
 0.2834645669291339 w
 1. g
-195.9055118110236435 353.836456692913373 360.0000000000000568 -35.4078740157480283 re
+195.9055118110236435 363.0364566929133616 360.0000000000000568 -35.4078740157480283 re
 B
 BT
 /F1 8 Tf
 9.1999999999999993 TL
 0.314 g
-204.4094488188976584 338.5325196850394036 Td
-(PostgreSQL Relational Database, Prisma ORM with automated migrations, Row-Level Locking) Tj
-T* (\(SELECT ... FOR UPDATE\) for zero double-spending, Immutable AuditLog table.) Tj
+204.4094488188976584 347.7325196850393922 Td
+(Cloudflare Pages edge hosting, persistent local state engine with strict schema specification,) Tj
+T* (Immutable Audit Logs.) Tj
 ET
 0. G
 0.5670000000000001 w
@@ -1128,7 +1127,7 @@ BT
 8.625 TL
 0.58 0.639 0.722 rg
 39.6850393700787407 28.3466929133857093 Td
-(Team-9 Banking Management System • UML & Software Architecture Specification • Page 2) Tj
+(Bankitis Online Banking System • UML & Software Architecture Specification • Page 2) Tj
 ET
 0. G
 0.5670000000000001 w
@@ -1304,7 +1303,7 @@ endobj
 21 0 obj
 <<
 /Producer (jsPDF 4.2.1)
-/CreationDate (D:20261112151824+05'30')
+/CreationDate (D:20261112193538+05'30')
 >>
 endobj
 22 0 obj
@@ -1318,35 +1317,35 @@ endobj
 xref
 0 23
 0000000000 65535 f 
-0000021728 00000 n 
-0000023553 00000 n 
+0000021491 00000 n 
+0000023316 00000 n 
 0000000015 00000 n 
 0000000152 00000 n 
-0000012620 00000 n 
-0000012757 00000 n 
-0000021791 00000 n 
-0000021916 00000 n 
-0000022046 00000 n 
-0000022179 00000 n 
-0000022317 00000 n 
-0000022441 00000 n 
-0000022570 00000 n 
-0000022702 00000 n 
-0000022838 00000 n 
-0000022966 00000 n 
-0000023093 00000 n 
-0000023222 00000 n 
-0000023355 00000 n 
-0000023457 00000 n 
-0000023803 00000 n 
-0000023889 00000 n 
+0000012606 00000 n 
+0000012743 00000 n 
+0000021554 00000 n 
+0000021679 00000 n 
+0000021809 00000 n 
+0000021942 00000 n 
+0000022080 00000 n 
+0000022204 00000 n 
+0000022333 00000 n 
+0000022465 00000 n 
+0000022601 00000 n 
+0000022729 00000 n 
+0000022856 00000 n 
+0000022985 00000 n 
+0000023118 00000 n 
+0000023220 00000 n 
+0000023566 00000 n 
+0000023652 00000 n 
 trailer
 <<
 /Size 23
 /Root 22 0 R
 /Info 21 0 R
-/ID [ <433B76AD7970FA7525AB643E02409F10> <433B76AD7970FA7525AB643E02409F10> ]
+/ID [ <827DD3E7BBA56E0217E62BDB409FBC66> <827DD3E7BBA56E0217E62BDB409FBC66> ]
 >>
 startxref
-23993
+23756
 %%EOF

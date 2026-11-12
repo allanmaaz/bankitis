@@ -1,5 +1,5 @@
 @startuml SequenceDiagram
-title Team-9 Banking Management System - UML Sequence Diagram (Money Transfer Flow)
+title Bankitis Online Banking System - UML Sequence Diagram (Money Transfer Flow)
 
 autonumber
 skinparam roundcorner 10
@@ -8,45 +8,36 @@ skinparam BoxPadding 10
 skinparam ParticipantPadding 10
 
 actor Customer as "Bank Customer" #LightSkyBlue
-participant Client as "Client UI (React/Next.js)" #LightYellow
-participant Action as "Banking Action Engine" #LightGreen
-participant Prisma as "Prisma ORM" #Wheat
-database DB as "PostgreSQL Database" #LightCyan
+participant Client as "Client UI (React/Vite)" #LightYellow
+participant Action as "Banking Engine" #LightGreen
+participant DB as "Banking State & Ledger" #LightCyan
 participant Notif as "Notification Dispatcher" #MistyRose
 
-Customer -> Client : 1. Enters recipient UPI ID (e.g. priya@bank)
-Client -> Action : 2. resolveRecipientAction("priya@bank")
-Action -> Prisma : 3. findUnique({ upiId: "priya@bank" })
-Prisma -> DB : 4. SELECT * FROM "Account" WHERE "upiId" = 'priya@bank'
-DB --> Prisma : 5. Returns Account and User relation
-Prisma --> Action : 6. Account data
-Action --> Client : 7. Return { success: true, recipientName: "Priya Sharma" }
-Client --> Customer : 8. Displays green verified recipient badge
+Customer -> Client : 1. Enters recipient UPI ID (e.g. devika@bank)
+Client -> Action : 2. resolveRecipientAction("devika@bank")
+Action -> DB : 3. Lookup account by upiId = 'devika@bank'
+DB --> Action : 4. Returns Account and User details
+Action --> Client : 5. Return { success: true, recipientName: "Devika" }
+Client --> Customer : 6. Displays verified recipient badge
 
-Customer -> Client : 9. Enters Amount (₹500), Category & Note
-Customer -> Client : 10. Enters 6-Digit UPI PIN & clicks "Confirm & Pay"
-Client -> Action : 11. transferMoneyAction(recipient, amount, pin, note)
+Customer -> Client : 7. Enters Amount, Category & Note
+Customer -> Client : 8. Enters 6-Digit UPI PIN & clicks "Confirm & Pay"
+Client -> Action : 9. transferMoney(recipient, amount, pin, note)
 
-group PostgreSQL ACID Transaction (Row-Level Locking)
-  Action -> Action : 12. Verify bcrypt hash of entered 6-digit PIN
-  Action -> Prisma : 13. Execute atomic prisma.$transaction
-  Prisma -> DB : 14. SELECT id FROM "Account" WHERE id IN (sender, receiver) FOR UPDATE
-  DB --> Prisma : 15. Row-level locks acquired deterministically
-  Action -> Action : 16. Verify locked sender balance >= transfer amount
-  Action -> Prisma : 17. UPDATE "Account" SET balance = balance - 500 WHERE id = sender
-  Prisma -> DB : 18. Deduct sender balance
-  Action -> Prisma : 19. UPDATE "Account" SET balance = balance + 500 WHERE id = receiver
-  Prisma -> DB : 20. Credit receiver balance
-  Action -> Prisma : 21. INSERT INTO "Transaction" (Ref: TXN-YYYYMMDD-XXXXXX)
-  Prisma -> DB : 22. Record ledger row
-  Action -> Prisma : 23. INSERT INTO "AuditLog" (action: "TRANSFER_EXECUTED")
-  Prisma -> DB : 24. Commit ACID transaction to disk
+group Atomic Transaction Execution
+  Action -> Action : 10. Verify 6-digit PIN & check rate limiting
+  Action -> DB : 11. Lock and verify sender balance >= transfer amount
+  Action -> DB : 12. Deduct sender balance
+  Action -> DB : 13. Credit receiver balance
+  Action -> DB : 14. Record Transaction ledger entry (Ref: TXN-YYYYMMDD-XXXXXX)
+  Action -> DB : 15. Write security AuditLog entry
+  Action -> DB : 16. Commit transaction atomically
 end
 
-Action -> Notif : 25. Dispatch in-app debit/credit alerts & email
-Notif --> Action : 26. Alerts queued / logged
-Action --> Client : 27. Return { success: true, referenceNumber, updatedBalance }
-Client --> Customer : 28. Render Success Receipt modal & update available balance
+Action -> Notif : 17. Dispatch in-app debit/credit alerts
+Notif --> Action : 18. Alerts queued / logged
+Action --> Client : 19. Return { success: true, referenceNumber, updatedBalance }
+Client --> Customer : 20. Render Success Receipt modal & update available balance
 
 @enduml
 

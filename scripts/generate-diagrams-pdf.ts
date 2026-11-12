@@ -1,4 +1,4 @@
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import fs from 'fs';
 import path from 'path';
@@ -17,14 +17,14 @@ async function generateDiagramsPdf() {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.text('TEAM-9 BANKING MANAGEMENT SYSTEM', 14, 16);
+  doc.text('BANKITIS ONLINE BANKING SYSTEM', 14, 16);
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text('UML DIAGRAMS & SYSTEM ARCHITECTURE SPECIFICATION', 14, 25);
+  doc.text('UML DIAGRAMS & SYSTEM ARCHITECTURE SPECIFICATION', 14, 24);
 
   doc.setFontSize(8);
-  doc.text('Coursework Documentation • StarUML / Rational Rose / PlantUML Standard', 14, 31);
+  doc.text('Team: Mohammed Maaz • Devika • Vivek • Apoorva • imthebest', 14, 31);
 
   // Section 1: Overview
   doc.setTextColor(15, 23, 42);
@@ -99,16 +99,16 @@ async function generateDiagramsPdf() {
   doc.setFont('helvetica', 'normal');
 
   const activitySteps = [
-    ['Step 1: Recipient Input', 'Customer inputs target UPI ID (e.g. priya@bank) or picks from saved beneficiaries.'],
-    ['Step 2: Recipient Resolution', 'Asynchronous DB query checks if account exists and is ACTIVE. Prevents self-transfer.'],
-    ['Step 3: Name Verification', 'Question 42 compliance: Displays verified recipient name (Priya Sharma) in green.'],
+    ['Step 1: Recipient Input', 'Customer inputs target UPI ID (e.g. devika@bank) or picks from saved beneficiaries.'],
+    ['Step 2: Recipient Resolution', 'Asynchronous query checks if account exists and is ACTIVE. Prevents self-transfer.'],
+    ['Step 3: Name Verification', 'Compliance verification: Displays verified recipient name (Devika) in real time.'],
     ['Step 4: Limits Validation', 'Validates: Amount >= INR 1.00, Amount <= INR 1,00,000, Daily utilized <= INR 2,00,000.'],
     ['Step 5: Balance Check', 'Verifies available balance >= transfer amount. Rejects if funds insufficient.'],
-    ['Step 6: PIN Security Check', 'Customer enters 6-digit PIN. Salted bcrypt validation. 3 failed attempts lock account for 15 mins.'],
-    ['Step 7: ACID Row-Level Lock', 'Executes SELECT FOR UPDATE on Account rows in deterministic order to prevent race conditions.'],
+    ['Step 6: PIN Security Check', 'Customer enters 6-digit PIN. Salted validation. 3 failed attempts lock account for 15 mins.'],
+    ['Step 7: Atomic Lock Check', 'Executes atomic check on accounts in deterministic order to prevent race conditions.'],
     ['Step 8: Atomic Balance Updates', 'Deducts amount from sender and credits receiver in single commit.'],
     ['Step 9: Ledger & Audit Logs', 'Generates TXN-YYYYMMDD-XXXXXX, inserts Transaction record and security AuditLog.'],
-    ['Step 10: Alerts & Receipt', 'Emits in-app notifications and email alerts. Displays success receipt with reference ID.'],
+    ['Step 10: Alerts & Receipt', 'Emits in-app notifications. Displays success receipt with reference ID.'],
   ];
 
   autoTable(doc, {
@@ -131,9 +131,9 @@ async function generateDiagramsPdf() {
   doc.text('4. Enterprise 3-Tier System Architecture', 14, y4);
 
   const archData = [
-    ['Tier 1: Presentation Layer', 'Next.js 16 (App Router), React 19, Tailwind CSS v4, Accessible Dialogs, Responsive Dashboard, Admin Console (/admin), PDF/CSV Statement Exporters.'],
-    ['Tier 2: Business Logic Layer', 'Next.js Server Actions, Zod input validation, JOSE JWT session tokens (HTTP-only secure cookies), bcryptjs password & 6-digit PIN hashing, Core Banking atomic engine, Notification dispatcher.'],
-    ['Tier 3: Data & Persistence Layer', 'PostgreSQL Relational Database, Prisma ORM with automated migrations, Row-Level Locking (SELECT ... FOR UPDATE) for zero double-spending, Immutable AuditLog table.'],
+    ['Tier 1: Presentation Layer', 'React 19, Tailwind CSS, Vite, Minimal FinTech UI, Admin Console (/admin), PDF & CSV Statement Exporters.'],
+    ['Tier 2: Business Logic Layer', 'Pure React Banking Engine, Idempotent Transaction Controller, PIN Validation & Lockout, In-App Notifications.'],
+    ['Tier 3: Data & Persistence Layer', 'Cloudflare Pages edge hosting, persistent local state engine with strict schema specification, Immutable Audit Logs.'],
   ];
 
   autoTable(doc, {
@@ -151,7 +151,7 @@ async function generateDiagramsPdf() {
       doc.setFontSize(7.5);
       doc.setTextColor(148, 163, 184);
       doc.text(
-        'Team-9 Banking Management System • UML & Software Architecture Specification • Page ' +
+        'Bankitis Online Banking System • UML & Software Architecture Specification • Page ' +
           doc.getNumberOfPages(),
         14,
         287

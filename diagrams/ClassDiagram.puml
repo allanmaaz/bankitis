@@ -1,5 +1,5 @@
 @startuml ClassDiagram
-title Team-9 Banking Management System - UML Class Diagram
+title Bankitis Online Banking System - UML Class Diagram
 
 skinparam classAttributeIconSize 0
 skinparam monochrome false

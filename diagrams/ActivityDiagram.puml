@@ -1,5 +1,5 @@
 @startuml ActivityDiagram
-title Team-9 Banking Management System - UML Activity Diagram
+title Bankitis Online Banking System - UML Activity Diagram
 
 skinparam monochrome false
 skinparam roundcorner 10

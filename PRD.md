@@ -1,8 +1,9 @@
 # Product Requirements Document (PRD)
-## Team-9: Banking Management System
+## Bankitis: Online Banking System
 
 **Document Version:** 1.0.0  
-**Project:** Team-9 Banking Management System  
+**Project:** Bankitis Online Banking System  
+**Team Members:** Mohammed Maaz, Devika, Vivek, Apoorva, imthebest  
 **Status:** Approved / Ready for Implementation  
 **Last Updated:** November 2026  
 **Target Platform:** Full-Stack Web Application (Mobile-Responsive Desktop & Web)
@@ -12,7 +13,7 @@
 ## 1. Executive Summary
 
 ### 1.1 Project Overview
-The **Team-9 Banking Management System** is a modern, high-reliability online banking application designed to facilitate seamless, secure, and instantaneous peer-to-peer (P2P) and account-to-account funds transfers using verified internal UPI handles (`username@bank`). 
+The **Bankitis Online Banking System** is a modern, high-reliability online banking application designed to facilitate seamless, secure, and instantaneous peer-to-peer (P2P) and account-to-account funds transfers using verified internal UPI handles (`username@bank`). 
 
 The system enforces strict financial integrity through atomic database transactions, verified recipient resolution, multi-tier limits, and dedicated transaction authorization (6-digit UPI PIN), alongside bank-grade PDF/CSV statements, real-time notifications, and interactive personal spending analytics.
 
@@ -64,7 +65,7 @@ graph TD
 ## 3. User Personas & Permissions
 
 ### 3.1 Personas
-1. **Registered Customer (Maaz / Priya):**
+1. **Registered Customer (Mohammed Maaz / Devika):**
    - Accesses dashboard with verified credentials.
    - Manages personal bank balance (pre-funded or initial simulated deposit).
    - Manages saved beneficiaries (manual UPI entry or directory search).
@@ -92,7 +93,7 @@ graph TD
 
 ### FR-3: Beneficiary Management
 - **FR-3.1:** **Adding Methods:**
-  1. *Manual Entry:* User inputs target UPI ID (e.g. `priya@bank`).
+  1. *Manual Entry:* User inputs target UPI ID (e.g. `devika@bank`).
   2. *Registered Directory:* User browses or searches the internal directory of registered application users.
 - **FR-3.2:** **Automatic Identity Verification:** When a UPI ID is entered, the system asynchronously queries the database and displays the recipient's verified full name before allowing the beneficiary to be saved.
 - **FR-3.3:** **No PIN Required to Save:** Adding a beneficiary does not require entering the transaction PIN; PIN is required only when executing funds transfers.
@@ -367,14 +368,14 @@ model AuditLog {
 
 ### 7.1 Resolve Recipient UPI
 - **Endpoint:** `POST /api/transfer/resolve-recipient`
-- **Request Body:** `{ "upiId": "priya@bank" }`
+- **Request Body:** `{ "upiId": "devika@bank" }`
 - **Response (200):**
   ```json
   {
     "success": true,
     "data": {
-      "upiId": "priya@bank",
-      "recipientName": "Priya Sharma",
+      "upiId": "devika@bank",
+      "recipientName": "Devika",
       "isSelf": false
     }
   }
@@ -386,7 +387,7 @@ model AuditLog {
 - **Request Body:**
   ```json
   {
-    "recipientUpi": "priya@bank",
+    "recipientUpi": "devika@bank",
     "amount": 2500.00,
     "upiPin": "123456",
     "category": "DINING",
@@ -401,7 +402,7 @@ model AuditLog {
     "data": {
       "referenceNumber": "TXN-20261111-9F42B1",
       "amount": 2500.00,
-      "recipientName": "Priya Sharma",
+      "recipientName": "Devika",
       "timestamp": "2026-11-11T23:55:00.000Z",
       "newBalance": 47500.00
     }
@@ -422,11 +423,11 @@ flowchart LR
 ```
 
 1. **Milestone 1: Project Setup & Authentication (Day 1)**
-   - Initialize Next.js 14/15 App Router project with TypeScript and Tailwind CSS.
-   - Configure shadcn/ui components (Button, Dialog, Card, Input, Table, Dropdown).
-   - Set up PostgreSQL schema with Prisma ORM.
-   - Implement NextAuth.js credentials provider with bcrypt password and PIN setup.
-   - Create database seed script with pre-populated demo users (`maaz@bank`, `priya@bank`, `rahul@bank`).
+   - Initialize project with React, Vite, and Tailwind CSS.
+   - Configure clean UI components with accessible modals.
+   - Set up core banking state engine.
+   - Implement user credentials and 6-digit PIN setup.
+   - Seed pre-populated demo users (`maaz@bank`, `devika@bank`, `vivek@bank`, `apoorva@bank`, `imthebest@bank`).
 
 2. **Milestone 2: Core Banking Engine & Atomic Transfers (Day 2)**
    - Implement row-level locked transfer transaction logic in Prisma (`$transaction`).

@@ -1,5 +1,5 @@
 @startuml SystemArchitecture
-title Team-9 Banking Management System - 3-Tier Enterprise System Architecture
+title Bankitis Online Banking System - 3-Tier Enterprise System Architecture
 
 skinparam componentStyle rectangle
 skinparam roundcorner 10

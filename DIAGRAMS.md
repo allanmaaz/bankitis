@@ -1,5 +1,6 @@
 # Software Engineering Architecture & UML Specification
-## Team-9: Banking Management System
+## Bankitis: Online Banking System
+**Team Members:** Mohammed Maaz, Devika, Vivek, Apoorva, imthebest
 
 This document contains the official **System Architecture Diagram**, **UML Class Diagram**, **UML Activity Diagram**, **UML Use Case Diagram**, and **UML Sequence Diagram** required for academic, lab viva, and technical evaluation.
 
@@ -283,7 +284,7 @@ flowchart LR
     Admin((Bank Administrator))
     CoreEngine((Core Banking Engine))
 
-    subgraph Banking_System ["Team-9 Banking Management System"]
+    subgraph Banking_System ["Bankitis Online Banking System"]
         UC1["Sign In / Authenticate"]
         UC2["View Account Balance & Masked No."]
         UC3["Send Money via UPI"]
@@ -343,11 +344,11 @@ sequenceDiagram
     participant DB as PostgreSQL (Prisma)
     participant Notif as Alert Dispatcher
 
-    Customer->>UI: Enter Recipient UPI ID (e.g. priya@bank)
-    UI->>API: resolveRecipientAction("priya@bank")
+    Customer->>UI: Enter Recipient UPI ID (e.g. devika@bank)
+    UI->>API: resolveRecipientAction("devika@bank")
     API->>DB: Query Account by upiId
     DB-->>API: Return account details & user name
-    API-->>UI: Return { success: true, recipientName: "Priya Sharma" }
+    API-->>UI: Return { success: true, recipientName: "Devika" }
     UI-->>Customer: Display verified name badge in green
 
     Customer->>UI: Enter Amount (₹500), Category (Dining), and Note
@@ -355,7 +356,7 @@ sequenceDiagram
     UI->>UI: Validate amount (₹1 ≤ amt ≤ ₹1,00,000, daily ≤ ₹2,00,000)
     Customer->>UI: Input 6-Digit UPI PIN & Click "Confirm & Pay"
 
-    UI->>API: transferMoneyAction(senderId, "priya@bank", 500, pin, category, note)
+    UI->>API: transferMoneyAction(senderId, "devika@bank", 500, pin, category, note)
     
     rect rgb(240, 248, 255)
     Note over API,DB: Atomic Database Transaction (ACID)
@@ -377,5 +378,5 @@ sequenceDiagram
 
 ---
 
-*Authored by Team-9 for Software Engineering Coursework Submission.*
+*Authored by Bankitis Engineering Team: Mohammed Maaz, Devika, Vivek, Apoorva, imthebest.*
 

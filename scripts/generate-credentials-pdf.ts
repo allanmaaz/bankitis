@@ -1,4 +1,4 @@
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import fs from 'fs';
 import path from 'path';
@@ -17,7 +17,7 @@ async function generateCredentialsPdf() {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.text('TEAM-9 DIGITAL BANK', 14, 16);
+  doc.text('BANKITIS DIGITAL BANK', 14, 16);
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
@@ -66,7 +66,7 @@ async function generateCredentialsPdf() {
 
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
-  doc.text('Admin Portal URL: http://localhost:3000/admin', 18, 80);
+  doc.text('Admin Portal URL: https://bankitis.pages.dev/admin', 18, 80);
   doc.text('Role Permission: Root System Administrator (ADMIN)', 18, 86);
   doc.text('Login Email: admin@bank.com', 18, 92);
   doc.text('Password: Password@123', 18, 98);
@@ -86,7 +86,7 @@ async function generateCredentialsPdf() {
 
   const customerData = [
     [
-      'Maaz Khan (Sender)',
+      'Mohammed Maaz',
       'maaz@bank.com',
       'Password@123',
       'maaz@bank',
@@ -95,31 +95,40 @@ async function generateCredentialsPdf() {
       'INR 75,000.00',
     ],
     [
-      'Priya Sharma (Recipient)',
-      'priya@bank.com',
+      'Devika',
+      'devika@bank.com',
       'Password@123',
-      'priya@bank',
-      '654321',
+      'devika@bank',
+      '123456',
       'ACC1000849202',
       'INR 52,000.00',
     ],
     [
-      'Rahul Verma (Beneficiary)',
-      'rahul@bank.com',
+      'Vivek',
+      'vivek@bank.com',
       'Password@123',
-      'rahul@bank',
-      '112233',
+      'vivek@bank',
+      '123456',
       'ACC1000849203',
       'INR 38,900.00',
     ],
     [
-      'Ananya Iyer (Enterprise)',
-      'ananya@bank.com',
+      'Apoorva',
+      'apoorva@bank.com',
       'Password@123',
-      'ananya@bank',
-      '998877',
+      'apoorva@bank',
+      '123456',
       'ACC1000849204',
-      'INR 1,12,500.00',
+      'INR 64,500.00',
+    ],
+    [
+      'imthebest',
+      'imthebest@bank.com',
+      'Password@123',
+      'imthebest@bank',
+      '123456',
+      'ACC1000849205',
+      'INR 1,00,000.00',
     ],
   ];
 
@@ -203,7 +212,7 @@ async function generateCredentialsPdf() {
       doc.setFontSize(7.5);
       doc.setTextColor(148, 163, 184);
       doc.text(
-        'Team-9 Banking Management System • Confidential Evaluation Material • Page ' +
+        'Bankitis Online Banking Management System • Confidential Evaluation Material • Page ' +
           doc.getNumberOfPages(),
         14,
         287

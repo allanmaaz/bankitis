@@ -12,23 +12,23 @@ async function runTests() {
     where: { email: 'maaz@bank.com' },
     include: { accounts: true },
   });
-  const priyaUser = await prisma.user.findUniqueOrThrow({
-    where: { email: 'priya@bank.com' },
+  const devikaUser = await prisma.user.findUniqueOrThrow({
+    where: { email: 'devika@bank.com' },
     include: { accounts: true },
   });
 
   const maazAccount = maazUser.accounts[0];
-  const priyaAccount = priyaUser.accounts[0];
+  const devikaAccount = devikaUser.accounts[0];
 
   console.log(`👤 Sender: ${maazUser.fullName} (${maazAccount.upiId}) - Balance: ₹${maazAccount.balance}`);
-  console.log(`👤 Recipient: ${priyaUser.fullName} (${priyaAccount.upiId}) - Balance: ₹${priyaAccount.balance}`);
+  console.log(`👤 Recipient: ${devikaUser.fullName} (${devikaAccount.upiId}) - Balance: ₹${devikaAccount.balance}`);
   console.log('----------------------------------------------------');
 
   // TEST 1: Recipient Verification (Question 42)
   console.log('Test 1: Testing Recipient Name Resolution...');
-  const resolveResult = await resolveUpiRecipient('priya@bank', maazUser.id);
-  if (resolveResult.success && resolveResult.recipientName === 'Priya Sharma') {
-    console.log('✅ PASS: Resolved "priya@bank" to "Priya Sharma"');
+  const resolveResult = await resolveUpiRecipient('devika@bank', maazUser.id);
+  if (resolveResult.success && resolveResult.recipientName === 'Devika') {
+    console.log('✅ PASS: Resolved "devika@bank" to "Devika"');
   } else {
     throw new Error(`FAIL: Recipient resolution failed: ${JSON.stringify(resolveResult)}`);
   }
@@ -46,7 +46,7 @@ async function runTests() {
   console.log('\nTest 3: Testing Min Amount Limit (< ₹1)...');
   const minLimitTest = await executeTransfer({
     senderUserId: maazUser.id,
-    recipientUpi: 'priya@bank',
+    recipientUpi: 'devika@bank',
     amount: 0.5,
     upiPin: '123456',
   });
@@ -60,7 +60,7 @@ async function runTests() {
   console.log('\nTest 4: Testing Max Amount Limit (> ₹1,00,000)...');
   const maxLimitTest = await executeTransfer({
     senderUserId: maazUser.id,
-    recipientUpi: 'priya@bank',
+    recipientUpi: 'devika@bank',
     amount: 150000,
     upiPin: '123456',
   });
@@ -74,7 +74,7 @@ async function runTests() {
   console.log('\nTest 5: Testing Incorrect 6-Digit PIN...');
   const badPinTest = await executeTransfer({
     senderUserId: maazUser.id,
-    recipientUpi: 'priya@bank',
+    recipientUpi: 'devika@bank',
     amount: 500,
     upiPin: '000000',
   });
@@ -89,13 +89,13 @@ async function runTests() {
   const initialMaazBalance = Number(
     (await prisma.account.findUniqueOrThrow({ where: { id: maazAccount.id } })).balance
   );
-  const initialPriyaBalance = Number(
-    (await prisma.account.findUniqueOrThrow({ where: { id: priyaAccount.id } })).balance
+  const initialDevikaBalance = Number(
+    (await prisma.account.findUniqueOrThrow({ where: { id: devikaAccount.id } })).balance
   );
 
   const transferResult = await executeTransfer({
     senderUserId: maazUser.id,
-    recipientUpi: 'priya@bank',
+    recipientUpi: 'devika@bank',
     amount: 500.00,
     upiPin: '123456',
     category: TransactionCategory.DINING,
@@ -110,15 +110,15 @@ async function runTests() {
 
   // Verify DB balances
   const updatedMaazAccount = await prisma.account.findUniqueOrThrow({ where: { id: maazAccount.id } });
-  const updatedPriyaAccount = await prisma.account.findUniqueOrThrow({ where: { id: priyaAccount.id } });
+  const updatedDevikaAccount = await prisma.account.findUniqueOrThrow({ where: { id: devikaAccount.id } });
 
   const finalMaazBalance = Number(updatedMaazAccount.balance);
-  const finalPriyaBalance = Number(updatedPriyaAccount.balance);
+  const finalDevikaBalance = Number(updatedDevikaAccount.balance);
 
   console.log(`   Sender Balance: ₹${initialMaazBalance} -> ₹${finalMaazBalance} (Diff: -₹${initialMaazBalance - finalMaazBalance})`);
-  console.log(`   Receiver Balance: ₹${initialPriyaBalance} -> ₹${finalPriyaBalance} (Diff: +₹${finalPriyaBalance - initialPriyaBalance})`);
+  console.log(`   Receiver Balance: ₹${initialDevikaBalance} -> ₹${finalDevikaBalance} (Diff: +₹${finalDevikaBalance - initialDevikaBalance})`);
 
-  if (initialMaazBalance - finalMaazBalance === 500 && finalPriyaBalance - initialPriyaBalance === 500) {
+  if (initialMaazBalance - finalMaazBalance === 500 && finalDevikaBalance - initialDevikaBalance === 500) {
     console.log('✅ PASS: Balances atomically updated with zero double-spending');
   } else {
     throw new Error('FAIL: Balance delta mismatch');
@@ -126,9 +126,9 @@ async function runTests() {
 
   // TEST 7: Beneficiary Verification & Saving (Question 44/45)
   console.log('\nTest 7: Testing Automatic Beneficiary Verification...');
-  const addBenResult = await addBeneficiary(maazUser.id, 'ananya@bank', 'Ananya Designer');
-  if (addBenResult.success && addBenResult.beneficiary?.beneficiaryName === 'Ananya Iyer') {
-    console.log('✅ PASS: Added "ananya@bank" with automatic name resolution "Ananya Iyer"');
+  const addBenResult = await addBeneficiary(maazUser.id, 'vivek@bank', 'Vivek');
+  if (addBenResult.success && addBenResult.beneficiary?.beneficiaryName === 'Vivek') {
+    console.log('✅ PASS: Added "vivek@bank" with automatic name resolution "Vivek"');
   } else {
     console.log(`ℹ️ Beneficiary info: ${addBenResult.error || 'Already added'}`);
   }
