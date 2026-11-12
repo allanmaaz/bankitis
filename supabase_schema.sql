@@ -3,8 +3,16 @@
 -- Copy and paste this complete script into Supabase SQL Editor and click "RUN".
 -- ==============================================================================
 
+-- 0. Cleanly drop any old conflicting tables if they exist
+DROP TABLE IF EXISTS public.audit_logs CASCADE;
+DROP TABLE IF EXISTS public.notifications CASCADE;
+DROP TABLE IF EXISTS public.transactions CASCADE;
+DROP TABLE IF EXISTS public.beneficiaries CASCADE;
+DROP TABLE IF EXISTS public.accounts CASCADE;
+DROP TABLE IF EXISTS public.users CASCADE;
+
 -- 1. Create Users Table
-CREATE TABLE IF NOT EXISTS public.users (
+CREATE TABLE public.users (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
@@ -16,7 +24,7 @@ CREATE TABLE IF NOT EXISTS public.users (
 );
 
 -- 2. Create Accounts Table
-CREATE TABLE IF NOT EXISTS public.accounts (
+CREATE TABLE public.accounts (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   account_number TEXT UNIQUE NOT NULL,
@@ -31,7 +39,7 @@ CREATE TABLE IF NOT EXISTS public.accounts (
 );
 
 -- 3. Create Beneficiaries Table
-CREATE TABLE IF NOT EXISTS public.beneficiaries (
+CREATE TABLE public.beneficiaries (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
@@ -42,7 +50,7 @@ CREATE TABLE IF NOT EXISTS public.beneficiaries (
 );
 
 -- 4. Create Transactions Ledger Table
-CREATE TABLE IF NOT EXISTS public.transactions (
+CREATE TABLE public.transactions (
   id TEXT PRIMARY KEY,
   reference TEXT UNIQUE NOT NULL,
   sender_account_id TEXT NOT NULL REFERENCES public.accounts(id) ON DELETE CASCADE,
@@ -58,7 +66,7 @@ CREATE TABLE IF NOT EXISTS public.transactions (
 );
 
 -- 5. Create In-App Notifications Table
-CREATE TABLE IF NOT EXISTS public.notifications (
+CREATE TABLE public.notifications (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
@@ -69,7 +77,7 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 );
 
 -- 6. Create Audit Logs Table
-CREATE TABLE IF NOT EXISTS public.audit_logs (
+CREATE TABLE public.audit_logs (
   id TEXT PRIMARY KEY,
   user_id TEXT NULL,
   action TEXT NOT NULL,
