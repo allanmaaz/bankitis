@@ -1,4 +1,4 @@
-// Team-9 Banking Management System - Core Pure React State & Banking Engine
+// Bankitis - Core Pure React State & Banking Engine
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Papa from 'papaparse';
@@ -180,7 +180,7 @@ const INITIAL_DATA = {
       id: 'aud_1',
       userId: 'usr_admin',
       action: 'SYSTEM_BOOTSTRAP',
-      details: 'Team-9 Online Banking Engine initialized with 4 customer accounts and root admin.',
+      details: 'Bankitis Online Banking Engine initialized.',
       createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
     },
   ],
@@ -618,12 +618,12 @@ export function downloadPDFStatement(user, account, transactions) {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.text('TEAM-9 DIGITAL BANK', 14, 18);
+  doc.text('BANKITIS', 14, 18);
 
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(186, 230, 253);
-  doc.text('Official Account & UPI Transaction Statement', 14, 26);
+  doc.text('Account Statement', 14, 26);
   doc.text(`Generated: ${new Date().toLocaleString('en-IN')}`, 14, 32);
 
   // Customer Account Summary Box
@@ -664,3 +664,4 @@ export function downloadPDFStatement(user, account, transactions) {
 
   doc.save(`Statement_${account.accountNumber}_${new Date().toISOString().slice(0, 10)}.pdf`);
 }
+

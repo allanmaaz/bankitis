@@ -11,7 +11,7 @@ export default function SendMoneyModal({
   onTransferSuccess,
   prefillUpi = '',
 }) {
-  const [step, setStep] = useState(1); // 1: Input details, 2: Review & PIN, 3: Success Receipt
+  const [step, setStep] = useState(1);
   const [recipientUpi, setRecipientUpi] = useState(prefillUpi);
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('GENERAL');
@@ -81,7 +81,7 @@ export default function SendMoneyModal({
   const handleConfirmTransfer = (e) => {
     e.preventDefault();
     if (pin.length !== 6) {
-      setTransferError('Please enter a valid 6-digit transaction PIN');
+      setTransferError('PIN must be 6 digits');
       return;
     }
 
@@ -122,30 +122,18 @@ export default function SendMoneyModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-      <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+      <div className="bg-white rounded-3xl max-w-md w-full shadow-xl border border-slate-100 overflow-hidden">
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-xs">
-              UPI
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-sm">
-                {step === 1 && 'Instant Money Transfer'}
-                {step === 2 && 'Review & Authorize Payment'}
-                {step === 3 && 'Payment Completed'}
-              </h3>
-              <p className="text-[11px] text-slate-500">
-                {step === 1 && 'Zero transaction fees • Instant settlement'}
-                {step === 2 && 'Verify details before confirmation'}
-                {step === 3 && 'Funds transferred securely'}
-              </p>
-            </div>
-          </div>
+          <h3 className="font-semibold text-slate-900 text-sm">
+            {step === 1 && 'Transfer Funds'}
+            {step === 2 && 'Confirm Transfer'}
+            {step === 3 && 'Transfer Complete'}
+          </h3>
           <button
             onClick={resetModal}
-            className="p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            className="p-1 rounded-full text-slate-400 hover:text-slate-600 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -154,10 +142,9 @@ export default function SendMoneyModal({
         {/* STEP 1: Details Entry */}
         {step === 1 && (
           <form onSubmit={handleProceedToReview} className="p-6 space-y-4">
-            {/* Quick Beneficiary Selector */}
             {beneficiaries.length > 0 && (
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                <label className="block text-xs font-medium text-slate-600 mb-1.5">
                   Saved Beneficiaries
                 </label>
                 <div className="flex space-x-2 overflow-x-auto pb-1">
@@ -169,9 +156,9 @@ export default function SendMoneyModal({
                         setRecipientUpi(b.upiId);
                         handleResolve(b.upiId);
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-300 text-xs text-left shrink-0 transition-all"
+                      className="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs text-left shrink-0 transition-all cursor-pointer"
                     >
-                      <div className="font-bold text-slate-900">{b.name}</div>
+                      <div className="font-medium text-slate-900">{b.name}</div>
                       <div className="text-[10px] text-slate-500 font-mono">{b.upiId}</div>
                     </button>
                   ))}
@@ -179,48 +166,43 @@ export default function SendMoneyModal({
               </div>
             )}
 
-            {/* Recipient UPI ID */}
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+              <label className="block text-xs font-medium text-slate-600 mb-1">
                 Recipient UPI ID
               </label>
               <div className="flex space-x-2">
                 <input
                   type="text"
                   required
-                  placeholder="e.g. priya@bank"
+                  placeholder="UPI ID"
                   value={recipientUpi}
                   onChange={(e) => {
                     setRecipientUpi(e.target.value);
                     setResolvedRecipient(null);
                   }}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:border-sky-500"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:border-slate-900"
                 />
                 <button
                   type="button"
                   onClick={() => handleResolve()}
                   disabled={resolving || !recipientUpi}
-                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white text-xs font-medium transition-colors cursor-pointer"
                 >
                   {resolving ? 'Verifying...' : 'Verify'}
                 </button>
               </div>
 
-              {/* Verified Recipient Box */}
               {resolvedRecipient && (
                 <div className="mt-2.5 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                     <div>
-                      <span className="font-bold text-emerald-950">{resolvedRecipient.name}</span>
-                      <span className="text-[10px] text-emerald-700 ml-2 font-mono">
+                      <span className="font-semibold text-emerald-950">{resolvedRecipient.name}</span>
+                      <span className="text-[10px] text-emerald-700 ml-1.5 font-mono">
                         ({resolvedRecipient.upiId})
                       </span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold uppercase bg-emerald-200/60 text-emerald-900 px-2 py-0.5 rounded-md">
-                    Verified
-                  </span>
                 </div>
               )}
 
@@ -232,18 +214,15 @@ export default function SendMoneyModal({
               )}
             </div>
 
-            {/* Transfer Amount */}
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                  Transfer Amount (₹)
-                </label>
+                <label className="block text-xs font-medium text-slate-600">Amount (₹)</label>
                 <span className="text-[10px] text-slate-400">
-                  Balance: ₹{currentAccount.balance.toLocaleString('en-IN')}
+                  Available: ₹{currentAccount.balance.toLocaleString('en-IN')}
                 </span>
               </div>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-base">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-medium text-slate-400 text-sm">
                   ₹
                 </span>
                 <input
@@ -252,46 +231,38 @@ export default function SendMoneyModal({
                   max="100000"
                   step="any"
                   required
-                  placeholder="0.00"
+                  placeholder="0"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 text-lg font-bold text-slate-900 focus:outline-none focus:border-sky-500"
+                  className="w-full pl-8 pr-4 py-2.5 rounded-xl border border-slate-200 text-base font-semibold text-slate-900 focus:outline-none focus:border-slate-900"
                 />
               </div>
-              <p className="text-[10px] text-slate-400 mt-1">
-                Limit: ₹1.00 min • ₹1,00,000.00 max per transaction
-              </p>
             </div>
 
-            {/* Category & Note */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Category
-                </label>
+                <label className="block text-xs font-medium text-slate-600 mb-1">Category</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-sky-500"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-slate-900"
                 >
                   <option value="GENERAL">General</option>
-                  <option value="FOOD">Food & Dining</option>
+                  <option value="FOOD">Food</option>
                   <option value="SHOPPING">Shopping</option>
-                  <option value="BILLS">Bills & Utilities</option>
+                  <option value="BILLS">Bills</option>
                   <option value="SERVICES">Services</option>
                   <option value="ENTERTAINMENT">Entertainment</option>
                 </select>
               </div>
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Remarks / Note
-                </label>
+                <label className="block text-xs font-medium text-slate-600 mb-1">Note</label>
                 <input
                   type="text"
-                  placeholder="e.g. Dinner split"
+                  placeholder="Optional"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-sky-500"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-slate-900"
                 />
               </div>
             </div>
@@ -306,9 +277,9 @@ export default function SendMoneyModal({
             <button
               type="submit"
               disabled={!resolvedRecipient || !amount}
-              className="w-full py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-lg shadow-sky-600/20 cursor-pointer"
+              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-medium text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer"
             >
-              <span>Continue to Confirmation</span>
+              <span>Continue</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
@@ -316,33 +287,27 @@ export default function SendMoneyModal({
 
         {/* STEP 2: Review & PIN */}
         {step === 2 && (
-          <form onSubmit={handleConfirmTransfer} className="p-6 space-y-5">
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-slate-500">Pay To:</span>
-                <span className="font-bold text-slate-900">{resolvedRecipient?.name}</span>
+          <form onSubmit={handleConfirmTransfer} className="p-6 space-y-4">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-slate-500">Recipient:</span>
+                <span className="font-medium text-slate-900">{resolvedRecipient?.name}</span>
               </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-slate-500">Recipient UPI ID:</span>
+              <div className="flex justify-between">
+                <span className="text-slate-500">UPI ID:</span>
                 <span className="font-mono text-slate-700">{resolvedRecipient?.upiId}</span>
               </div>
-              <div className="flex justify-between items-center text-xs">
+              <div className="flex justify-between pt-1 border-t border-slate-200">
                 <span className="text-slate-500">Amount:</span>
-                <span className="text-base font-extrabold text-slate-900">
+                <span className="text-sm font-bold text-slate-900">
                   ₹{parseFloat(amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-xs border-t border-slate-200/60 pt-2">
-                <span className="text-slate-500">Transaction Fee:</span>
-                <span className="font-bold text-emerald-600">₹0.00 (Free)</span>
-              </div>
             </div>
 
-            {/* 6-Digit PIN */}
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1 flex items-center space-x-1.5">
-                <KeyRound className="w-3.5 h-3.5 text-indigo-600" />
-                <span>Enter 6-Digit Transaction PIN</span>
+              <label className="block text-xs font-medium text-slate-700 mb-1">
+                Enter 6-Digit PIN
               </label>
               <input
                 type="password"
@@ -352,11 +317,8 @@ export default function SendMoneyModal({
                 placeholder="••••••"
                 value={pin}
                 onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                className="w-full text-center tracking-[1em] text-2xl font-mono py-3 rounded-xl border border-slate-300 focus:outline-none focus:border-indigo-500"
+                className="w-full text-center tracking-[0.8em] text-xl font-mono py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-slate-900"
               />
-              <p className="text-[10px] text-slate-400 text-center mt-1">
-                Account locks for 15 minutes after 3 incorrect attempts.
-              </p>
             </div>
 
             {transferError && (
@@ -366,21 +328,20 @@ export default function SendMoneyModal({
               </div>
             )}
 
-            <div className="flex space-x-3">
+            <div className="flex space-x-2">
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase transition-colors"
+                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs transition-colors cursor-pointer"
               >
                 Back
               </button>
               <button
                 type="submit"
                 disabled={transferring || pin.length !== 6}
-                className="flex-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-lg shadow-indigo-600/20 cursor-pointer"
+                className="flex-2 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-medium text-xs transition-all flex items-center justify-center space-x-1 cursor-pointer"
               >
-                <ShieldCheck className="w-4 h-4" />
-                <span>{transferring ? 'Processing...' : 'Confirm Payment'}</span>
+                <span>{transferring ? 'Processing...' : 'Confirm'}</span>
               </button>
             </div>
           </form>
@@ -388,50 +349,41 @@ export default function SendMoneyModal({
 
         {/* STEP 3: Success Receipt */}
         {step === 3 && receipt && (
-          <div className="p-6 text-center space-y-5">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <CheckCircle2 className="w-8 h-8" />
+          <div className="p-6 text-center space-y-4">
+            <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
 
             <div>
-              <h4 className="text-xl font-black text-slate-900">Transfer Successful!</h4>
-              <p className="text-xs text-slate-500 mt-1">
-                Amount has been atomically debited and credited.
-              </p>
+              <h4 className="text-base font-bold text-slate-900">Transfer Successful</h4>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-left space-y-2.5 text-xs">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-left space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-500">Transaction Ref:</span>
-                <span className="font-mono font-bold text-slate-900">{receipt.reference}</span>
+                <span className="text-slate-500">Ref:</span>
+                <span className="font-mono text-slate-800">{receipt.reference}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Transferred To:</span>
-                <span className="font-bold text-slate-900">{receipt.recipientName}</span>
+                <span className="text-slate-500">To:</span>
+                <span className="font-medium text-slate-900">{receipt.recipientName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Recipient UPI ID:</span>
+                <span className="text-slate-500">UPI ID:</span>
                 <span className="font-mono text-slate-700">{receipt.recipientUpiId}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Amount Paid:</span>
-                <span className="text-base font-extrabold text-emerald-600">
+              <div className="flex justify-between border-t border-slate-200 pt-1.5">
+                <span className="text-slate-500">Amount:</span>
+                <span className="text-sm font-bold text-emerald-600">
                   ₹{receipt.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                </span>
-              </div>
-              <div className="flex justify-between border-t border-slate-200/60 pt-2">
-                <span className="text-slate-500">New Available Balance:</span>
-                <span className="font-bold text-slate-900">
-                  ₹{receipt.newBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </span>
               </div>
             </div>
 
             <button
               onClick={resetModal}
-              className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider transition-all"
+              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition-all cursor-pointer"
             >
-              Done & Return to Dashboard
+              Done
             </button>
           </div>
         )}

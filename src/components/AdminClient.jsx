@@ -5,10 +5,6 @@ import {
   Wallet,
   Activity,
   Lock,
-  Unlock,
-  Sliders,
-  DollarSign,
-  AlertTriangle,
   ArrowLeft,
   X,
   CheckCircle2,
@@ -77,7 +73,7 @@ export default function AdminClient({
 
     if (res.success) {
       setAdjustSuccess(
-        `Successfully ${adjustType === 'CREDIT' ? 'credited' : 'debited'} ₹${adjustAmount} to account ${selectedAccount.accountNumber}.`
+        `Successfully ${adjustType === 'CREDIT' ? 'credited' : 'debited'} ₹${adjustAmount}.`
       );
       setAdjustAmount('');
       setAdjustReason('');
@@ -93,158 +89,128 @@ export default function AdminClient({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 sm:p-8 space-y-8">
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 sm:p-8 space-y-6">
       {/* Top Bar */}
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="max-w-7xl mx-auto flex items-center justify-between border-b border-slate-800 pb-5">
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-600 flex items-center justify-center text-white shadow-lg shadow-rose-600/30">
-            <ShieldAlert className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-white">
+            <ShieldAlert className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center space-x-2">
-              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                Central Bank Administrator Portal
-              </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
-                Root Clearance
-              </span>
-            </div>
+            <h1 className="text-lg font-bold text-white tracking-tight">
+              Bankitis Admin
+            </h1>
             <p className="text-xs text-slate-400">
-              Administrative Control System • Zero Customer Association
+              Operations & Management
             </p>
           </div>
         </div>
 
         <button
           onClick={onExitAdmin}
-          className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition-colors cursor-pointer w-fit"
+          className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-medium transition-colors cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Exit to Customer Portal</span>
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Exit</span>
         </button>
       </div>
 
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Metric Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-3xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
-              <span>Total Customer Deposits</span>
-              <Wallet className="w-4 h-4 text-emerald-400" />
-            </div>
-            <div className="text-2xl sm:text-3xl font-black text-white">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-1">
+            <div className="text-xs text-slate-400 font-medium">Customer Deposits</div>
+            <div className="text-xl sm:text-2xl font-bold text-white">
               ₹{totalLiquidity.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </div>
-            <div className="text-[11px] text-slate-500">Across {customerAccounts.length} active customer accounts</div>
           </div>
 
-          <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-3xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
-              <span>24h Transfer Volume</span>
-              <Activity className="w-4 h-4 text-sky-400" />
-            </div>
-            <div className="text-2xl sm:text-3xl font-black text-white">
+          <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-1">
+            <div className="text-xs text-slate-400 font-medium">Transfer Volume</div>
+            <div className="text-xl sm:text-2xl font-bold text-white">
               ₹{totalVolume.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </div>
-            <div className="text-[11px] text-slate-500">{transactions.length} total ledger records</div>
           </div>
 
-          <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-3xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
-              <span>Frozen Accounts</span>
-              <Lock className="w-4 h-4 text-rose-400" />
-            </div>
-            <div className="text-2xl sm:text-3xl font-black text-rose-400">{frozenCount}</div>
-            <div className="text-[11px] text-slate-500">Blocked from sending funds</div>
+          <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-1">
+            <div className="text-xs text-slate-400 font-medium">Frozen Accounts</div>
+            <div className="text-xl sm:text-2xl font-bold text-rose-400">{frozenCount}</div>
           </div>
 
-          <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-3xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
-              <span>Security PIN Lockouts</span>
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
-            </div>
-            <div className="text-2xl sm:text-3xl font-black text-amber-400">{lockedCount}</div>
-            <div className="text-[11px] text-slate-500">Exceeded 3 PIN attempts</div>
+          <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-1">
+            <div className="text-xs text-slate-400 font-medium">PIN Lockouts</div>
+            <div className="text-xl sm:text-2xl font-bold text-amber-400">{lockedCount}</div>
           </div>
         </div>
 
         {/* Customer Accounts Management Table */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-white flex items-center space-x-2">
-                <Users className="w-5 h-5 text-indigo-400" />
-                <span>Customer Accounts Ledger ({customerAccounts.length})</span>
-              </h2>
-              <p className="text-xs text-slate-400">
-                Real-time compliance status, liquidity adjustments, and security lockout controls
-              </p>
-            </div>
+            <h2 className="text-sm font-bold text-white flex items-center space-x-2">
+              <Users className="w-4 h-4 text-slate-400" />
+              <span>Customer Accounts ({customerAccounts.length})</span>
+            </h2>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400">
+              <thead className="border-b border-slate-800 text-[10px] uppercase font-medium text-slate-500">
                 <tr>
-                  <th className="py-3 px-3">Customer</th>
-                  <th className="py-3 px-3">Account No & UPI</th>
-                  <th className="py-3 px-3">Available Balance</th>
-                  <th className="py-3 px-3">Status</th>
-                  <th className="py-3 px-3">PIN Security</th>
-                  <th className="py-3 px-3 text-right">Actions</th>
+                  <th className="py-2.5 px-3">Customer</th>
+                  <th className="py-2.5 px-3">Account & UPI</th>
+                  <th className="py-2.5 px-3">Balance</th>
+                  <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2.5 px-3">Security</th>
+                  <th className="py-2.5 px-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-slate-800/40">
                 {customerAccounts.map((acc) => {
                   const user = allUsers.find((u) => u.id === acc.userId);
                   const isLocked = acc.lockedUntil && new Date(acc.lockedUntil) > new Date();
 
                   return (
-                    <tr key={acc.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="py-3.5 px-3">
-                        <div className="font-bold text-white">{user?.name}</div>
+                    <tr key={acc.id} className="hover:bg-slate-800/30 transition-colors">
+                      <td className="py-3 px-3">
+                        <div className="font-medium text-white">{user?.name}</div>
                         <div className="text-[10px] text-slate-500">{user?.email}</div>
                       </td>
 
-                      <td className="py-3.5 px-3">
-                        <div className="font-mono text-slate-300 font-bold">{acc.accountNumber}</div>
-                        <div className="text-[11px] font-mono text-sky-400">{acc.upiId}</div>
+                      <td className="py-3 px-3">
+                        <div className="font-mono text-slate-300">{acc.accountNumber}</div>
+                        <div className="text-[10px] font-mono text-slate-400">{acc.upiId}</div>
                       </td>
 
-                      <td className="py-3.5 px-3 font-bold text-emerald-400 text-sm">
+                      <td className="py-3 px-3 font-semibold text-emerald-400 text-xs">
                         ₹{acc.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </td>
 
-                      <td className="py-3.5 px-3">
+                      <td className="py-3 px-3">
                         {acc.status === 'FROZEN' ? (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/20 text-rose-300">
                             FROZEN
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-300">
                             ACTIVE
                           </span>
                         )}
                       </td>
 
-                      <td className="py-3.5 px-3">
+                      <td className="py-3 px-3">
                         {isLocked ? (
-                          <div className="flex items-center space-x-1.5 text-amber-400 font-bold text-[11px]">
-                            <AlertTriangle className="w-3.5 h-3.5" />
-                            <span>Locked (3 fails)</span>
-                          </div>
+                          <span className="text-amber-400 font-medium text-[11px]">Locked</span>
                         ) : (
-                          <span className="text-slate-500 text-[11px]">Normal ({acc.failedPinAttempts || 0}/3)</span>
+                          <span className="text-slate-500 text-[11px]">Normal</span>
                         )}
                       </td>
 
-                      <td className="py-3.5 px-3 text-right">
-                        <div className="inline-flex items-center space-x-2">
+                      <td className="py-3 px-3 text-right">
+                        <div className="inline-flex items-center space-x-1.5">
                           {isLocked && (
                             <button
                               onClick={() => handleUnlockPin(acc.id)}
-                              className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-[11px] font-bold transition-colors cursor-pointer"
-                              title="Clear 3-attempt PIN lockout"
+                              className="px-2 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-[11px] font-medium transition-colors cursor-pointer"
                             >
                               Unlock PIN
                             </button>
@@ -252,10 +218,10 @@ export default function AdminClient({
 
                           <button
                             onClick={() => handleFreezeToggle(acc.id)}
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors cursor-pointer ${
+                            className={`px-2 py-1 rounded-lg text-[11px] font-medium transition-colors cursor-pointer ${
                               acc.status === 'FROZEN'
-                                ? 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border-emerald-500/30'
-                                : 'bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border-rose-500/30'
+                                ? 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300'
+                                : 'bg-rose-500/20 hover:bg-rose-500/30 text-rose-300'
                             }`}
                           >
                             {acc.status === 'FROZEN' ? 'Unfreeze' : 'Freeze'}
@@ -268,9 +234,9 @@ export default function AdminClient({
                               setAdjustError('');
                               setAdjustSuccess('');
                             }}
-                            className="px-2.5 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 text-[11px] font-bold transition-colors cursor-pointer"
+                            className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium transition-colors cursor-pointer"
                           >
-                            Adjust Balance
+                            Adjust
                           </button>
                         </div>
                       </td>
@@ -282,75 +248,41 @@ export default function AdminClient({
           </div>
         </div>
 
-        {/* Global Central Transaction Ledger */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4">
+        {/* Global Transaction Ledger */}
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white flex items-center space-x-2">
-              <FileText className="w-4 h-4 text-sky-400" />
-              <span>Global Interbank Transaction Ledger</span>
+            <h2 className="text-sm font-bold text-white flex items-center space-x-2">
+              <FileText className="w-4 h-4 text-slate-400" />
+              <span>Transaction Ledger</span>
             </h2>
-            <span className="text-xs text-slate-500">{transactions.length} transactions</span>
+            <span className="text-xs text-slate-500">{transactions.length} records</span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-800 text-[10px] uppercase font-bold text-slate-400">
+              <thead className="border-b border-slate-800 text-[10px] uppercase font-medium text-slate-500">
                 <tr>
-                  <th className="py-2.5 px-3">Date</th>
-                  <th className="py-2.5 px-3">Reference</th>
-                  <th className="py-2.5 px-3">Category</th>
-                  <th className="py-2.5 px-3">Description</th>
-                  <th className="py-2.5 px-3">Amount</th>
-                  <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2 px-3">Date</th>
+                  <th className="py-2 px-3">Ref</th>
+                  <th className="py-2 px-3">Amount</th>
+                  <th className="py-2 px-3">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40 font-mono">
+              <tbody className="divide-y divide-slate-800/30 font-mono">
                 {transactions.map((t) => (
-                  <tr key={t.id} className="hover:bg-slate-800/30">
+                  <tr key={t.id} className="hover:bg-slate-800/20">
                     <td className="py-2 px-3 text-slate-400">
-                      {new Date(t.createdAt).toLocaleString('en-IN')}
+                      {new Date(t.createdAt).toLocaleDateString('en-IN')}
                     </td>
-                    <td className="py-2 px-3 text-sky-400 font-bold">{t.reference}</td>
-                    <td className="py-2 px-3 text-slate-300">{t.category}</td>
-                    <td className="py-2 px-3 text-slate-300">{t.description}</td>
-                    <td className="py-2 px-3 text-emerald-400 font-bold">
+                    <td className="py-2 px-3 text-slate-200">{t.reference}</td>
+                    <td className="py-2 px-3 text-emerald-400 font-semibold">
                       ₹{t.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </td>
-                    <td className="py-2 px-3">
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-400">
-                        {t.status}
-                      </span>
-                    </td>
+                    <td className="py-2 px-3 text-slate-400">{t.status}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
-
-        {/* Central Audit Stream */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4">
-          <h2 className="text-base font-bold text-white flex items-center space-x-2">
-            <Activity className="w-4 h-4 text-purple-400" />
-            <span>Administrative Compliance & Audit Stream</span>
-          </h2>
-          <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-            {auditLogs.map((log) => (
-              <div
-                key={log.id}
-                className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-xs flex items-center justify-between"
-              >
-                <div className="space-y-0.5">
-                  <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-purple-500/20 text-purple-300">
-                    {log.action}
-                  </span>
-                  <div className="text-slate-300 text-xs mt-1">{log.details}</div>
-                </div>
-                <div className="text-[10px] font-mono text-slate-500">
-                  {new Date(log.createdAt).toLocaleTimeString('en-IN')}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -358,101 +290,88 @@ export default function AdminClient({
       {/* Balance Adjustment Modal */}
       {showAdjustModal && selectedAccount && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center pb-3 border-b border-slate-800">
-              <div>
-                <h3 className="font-bold text-white text-sm">Administrative Balance Adjustment</h3>
-                <p className="text-[11px] text-slate-400">
-                  Account: {selectedAccount.accountNumber} ({selectedAccount.upiId})
-                </p>
-              </div>
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-5 space-y-4">
+            <div className="flex justify-between items-center pb-2 border-b border-slate-800">
+              <h3 className="font-semibold text-white text-sm">Adjust Balance</h3>
               <button
                 onClick={() => setShowAdjustModal(false)}
                 className="p-1 rounded-full text-slate-400 hover:text-white"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleAdjustSubmit} className="space-y-4">
+            <form onSubmit={handleAdjustSubmit} className="space-y-3">
               <div>
-                <label className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
-                  Adjustment Type
-                </label>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Type</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setAdjustType('CREDIT')}
-                    className={`py-2 rounded-xl text-xs font-bold transition-colors ${
+                    className={`py-1.5 rounded-xl text-xs font-medium transition-colors ${
                       adjustType === 'CREDIT'
                         ? 'bg-emerald-600 text-white'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                        : 'bg-slate-800 text-slate-400'
                     }`}
                   >
-                    + Credit Funds
+                    + Credit
                   </button>
                   <button
                     type="button"
                     onClick={() => setAdjustType('DEBIT')}
-                    className={`py-2 rounded-xl text-xs font-bold transition-colors ${
+                    className={`py-1.5 rounded-xl text-xs font-medium transition-colors ${
                       adjustType === 'DEBIT'
                         ? 'bg-rose-600 text-white'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                        : 'bg-slate-800 text-slate-400'
                     }`}
                   >
-                    - Debit Funds
+                    - Debit
                   </button>
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
-                  Adjustment Amount (₹)
-                </label>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Amount (₹)</label>
                 <input
                   type="number"
                   step="any"
                   required
-                  placeholder="0.00"
+                  placeholder="0"
                   value={adjustAmount}
                   onChange={(e) => setAdjustAmount(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm font-bold focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm font-semibold focus:outline-none focus:border-slate-700"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
-                  Mandatory Audit Reason
-                </label>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Reason</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Disputed charge reversal"
+                  placeholder="Reason"
                   value={adjustReason}
                   onChange={(e) => setAdjustReason(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs focus:outline-none focus:border-slate-700"
                 />
               </div>
 
               {adjustError && (
-                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center space-x-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{adjustError}</span>
+                <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+                  {adjustError}
                 </div>
               )}
 
               {adjustSuccess && (
-                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  <span>{adjustSuccess}</span>
+                <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs">
+                  {adjustSuccess}
                 </div>
               )}
 
               <button
                 type="submit"
-                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-wider transition-all"
+                className="w-full py-2.5 rounded-xl bg-white hover:bg-slate-200 text-slate-900 font-medium text-xs transition-all cursor-pointer"
               >
-                Execute Adjustment
+                Execute
               </button>
             </form>
           </div>
