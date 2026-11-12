@@ -10,6 +10,7 @@
     "deploy": "vite build && npx wrangler pages deploy dist --project-name bankitis --commit-dirty=true"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
     "clsx": "^2.1.1",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.9",

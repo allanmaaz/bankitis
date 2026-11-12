@@ -2,6 +2,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Papa from 'papaparse';
+import { getSupabaseClient } from './supabaseClient';
 
 const STORAGE_KEY = 'bankitis_data_v4';
 
@@ -142,6 +143,98 @@ export function saveDatabase(data) {
   }
 }
 
+// Supabase Cloud PostgreSQL Sync
+export async function syncDatabaseWithSupabase() {
+  const supabase = getSupabaseClient();
+  if (!supabase) return null;
+
+  try {
+    const [uRes, aRes, bRes, tRes, nRes, audRes] = await Promise.all([
+      supabase.from('users').select('*'),
+      supabase.from('accounts').select('*'),
+      supabase.from('beneficiaries').select('*'),
+      supabase.from('transactions').select('*').order('created_at', { ascending: false }),
+      supabase.from('notifications').select('*').order('created_at', { ascending: false }),
+      supabase.from('audit_logs').select('*').order('created_at', { ascending: false }),
+    ]);
+
+    if (uRes.error || aRes.error) {
+      console.warn('Supabase fetch error, fallback to local:', uRes.error || aRes.error);
+      return null;
+    }
+
+    const cloudDb = {
+      users: (uRes.data || []).map(u => ({
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        password: u.password,
+        role: u.role,
+        pin: u.pin,
+        phone: u.phone,
+      })),
+      accounts: (aRes.data || []).map(a => ({
+        id: a.id,
+        userId: a.user_id,
+        accountNumber: a.account_number,
+        upiId: a.upi_id,
+        balance: Number(a.balance),
+        dailyLimit: Number(a.daily_limit),
+        dailySpent: Number(a.daily_spent),
+        status: a.status,
+        failedPinAttempts: a.failed_pin_attempts || 0,
+        lockedUntil: a.locked_until,
+      })),
+      beneficiaries: (bRes.data || []).map(b => ({
+        id: b.id,
+        userId: b.user_id,
+        name: b.name,
+        upiId: b.upi_id,
+        accountNumber: b.account_number,
+        nickname: b.nickname,
+      })),
+      transactions: (tRes.data || []).map(t => ({
+        id: t.id,
+        reference: t.reference,
+        senderAccountId: t.sender_account_id,
+        receiverAccountId: t.receiver_account_id,
+        amount: Number(t.amount),
+        fee: Number(t.fee || 0),
+        status: t.status,
+        category: t.category,
+        description: t.description,
+        senderBalanceAfter: Number(t.sender_balance_after),
+        receiverBalanceAfter: Number(t.receiver_balance_after),
+        createdAt: t.created_at,
+      })),
+      notifications: (nRes.data || []).map(n => ({
+        id: n.id,
+        userId: n.user_id,
+        title: n.title,
+        message: n.message,
+        type: n.type,
+        read: n.read,
+        createdAt: n.created_at,
+      })),
+      auditLogs: (audRes.data || []).map(l => ({
+        id: l.id,
+        userId: l.user_id,
+        action: l.action,
+        details: l.details,
+        createdAt: l.created_at,
+      })),
+    };
+
+    if (cloudDb.users.length > 0) {
+      saveDatabase(cloudDb);
+      return cloudDb;
+    }
+  } catch (e) {
+    console.error('Error syncing with Supabase:', e);
+  }
+  return null;
+}
+
 // Authentication
 export function authenticateUser(email, password) {
   const db = loadDatabase();
@@ -206,6 +299,35 @@ export function registerCustomer({ name, email, password, phone, upiHandle, pin 
   });
 
   saveDatabase(db);
+
+  // Background Supabase Sync
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      supabase.from('users').insert({
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        password: newUser.password,
+        role: newUser.role,
+        pin: newUser.pin,
+        phone: newUser.phone,
+      }).then();
+      supabase.from('accounts').insert({
+        id: newAccount.id,
+        user_id: newAccount.userId,
+        account_number: newAccount.accountNumber,
+        upi_id: newAccount.upiId,
+        balance: newAccount.balance,
+        daily_limit: newAccount.dailyLimit,
+        daily_spent: newAccount.dailySpent,
+        status: newAccount.status,
+      }).then();
+    }
+  } catch (err) {
+    console.error('Supabase register error:', err);
+  }
+
   return { success: true, user: newUser };
 }
 
@@ -390,6 +512,36 @@ export function executeMoneyTransfer({
 
   saveDatabase(db);
 
+  // Background Supabase Sync
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      supabase.from('accounts').update({ balance: senderAccount.balance, daily_spent: senderAccount.dailySpent }).eq('id', senderAccount.id).then();
+      supabase.from('accounts').update({ balance: recipientAccount.balance }).eq('id', recipientAccount.id).then();
+      supabase.from('transactions').insert({
+        id: transactionRecord.id,
+        reference: transactionRecord.reference,
+        sender_account_id: senderAccount.id,
+        receiver_account_id: recipientAccount.id,
+        amount: transactionRecord.amount,
+        fee: 0,
+        status: 'SUCCESS',
+        category: transactionRecord.category,
+        description: transactionRecord.description,
+        sender_balance_after: senderAccount.balance,
+        receiver_balance_after: recipientAccount.balance,
+      }).then();
+      supabase.from('audit_logs').insert({
+        id: `aud_${Date.now()}`,
+        user_id: senderUserId,
+        action: 'UPI_TRANSFER',
+        details: `Transfer of ₹${parsedAmount} from ${senderAccount.upiId} to ${recipientAccount.upiId} [Ref: ${reference}]`,
+      }).then();
+    }
+  } catch (err) {
+    console.error('Supabase transfer sync error:', err);
+  }
+
   return {
     success: true,
     reference,
@@ -427,6 +579,24 @@ export function addBeneficiaryToAccount({ userId, upiId, nickname }) {
 
   db.beneficiaries.unshift(newBeneficiary);
   saveDatabase(db);
+
+  // Background Supabase Sync
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      supabase.from('beneficiaries').insert({
+        id: newBeneficiary.id,
+        user_id: newBeneficiary.userId,
+        name: newBeneficiary.name,
+        upi_id: newBeneficiary.upiId,
+        account_number: newBeneficiary.accountNumber,
+        nickname: newBeneficiary.nickname,
+      }).then();
+    }
+  } catch (e) {
+    console.error('Supabase beneficiary sync error:', e);
+  }
+
   return { success: true, beneficiary: newBeneficiary };
 }
 
@@ -448,6 +618,23 @@ export function adminToggleFreeze(accountId) {
   });
 
   saveDatabase(db);
+
+  // Background Supabase Sync
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      supabase.from('accounts').update({ status: account.status }).eq('id', account.id).then();
+      supabase.from('audit_logs').insert({
+        id: `aud_${Date.now()}`,
+        user_id: 'usr_admin',
+        action: account.status === 'FROZEN' ? 'ACCOUNT_FREEZE' : 'ACCOUNT_UNFREEZE',
+        details: `Account ${account.accountNumber} status changed to ${account.status}`,
+      }).then();
+    }
+  } catch (e) {
+    console.error('Supabase freeze sync error:', e);
+  }
+
   return { success: true, status: account.status };
 }
 
@@ -503,6 +690,23 @@ export function adminAdjustBalance({ accountId, amount, type, reason }) {
   });
 
   saveDatabase(db);
+
+  // Background Supabase Sync
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      supabase.from('accounts').update({ balance: account.balance }).eq('id', account.id).then();
+      supabase.from('audit_logs').insert({
+        id: `aud_${Date.now()}`,
+        user_id: 'usr_admin',
+        action: `ADMIN_BALANCE_${type}`,
+        details: `Adjusted balance for ${account.accountNumber} (${targetUser?.name}) by ${type === 'CREDIT' ? '+' : '-'}₹${parsed}. Reason: ${reason}`,
+      }).then();
+    }
+  } catch (e) {
+    console.error('Supabase adjust sync error:', e);
+  }
+
   return { success: true, newBalance: account.balance };
 }
 

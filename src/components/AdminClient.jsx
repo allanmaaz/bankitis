@@ -10,12 +10,15 @@ import {
   CheckCircle2,
   AlertCircle,
   FileText,
+  Database,
 } from 'lucide-react';
 import {
   adminToggleFreeze,
   adminUnlockPINLockout,
   adminAdjustBalance,
 } from '../lib/bankingEngine';
+import { getSupabaseCredentials } from '../lib/supabaseClient';
+import DatabaseSettingsModal from './DatabaseSettingsModal';
 
 export default function AdminClient({
   currentUser,
@@ -28,6 +31,8 @@ export default function AdminClient({
 }) {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [showAdjustModal, setShowAdjustModal] = useState(false);
+  const [showDbModal, setShowDbModal] = useState(false);
+  const { isConfigured: isCloudDb } = getSupabaseCredentials();
   const [adjustAmount, setAdjustAmount] = useState('');
   const [adjustType, setAdjustType] = useState('CREDIT');
   const [adjustReason, setAdjustReason] = useState('');
@@ -106,13 +111,23 @@ export default function AdminClient({
           </div>
         </div>
 
-        <button
-          onClick={onExitAdmin}
-          className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-medium transition-colors cursor-pointer"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Exit</span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowDbModal(true)}
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-medium transition-colors cursor-pointer"
+          >
+            <Database className={`w-3.5 h-3.5 ${isCloudDb ? 'text-emerald-400' : 'text-slate-400'}`} />
+            <span className="hidden sm:inline">Database:</span>
+            <span>{isCloudDb ? 'Supabase' : 'Local'}</span>
+          </button>
+          <button
+            onClick={onExitAdmin}
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-medium transition-colors cursor-pointer"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Exit</span>
+          </button>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto space-y-6">
@@ -377,6 +392,14 @@ export default function AdminClient({
           </div>
         </div>
       )}
+
+      <DatabaseSettingsModal
+        isOpen={showDbModal}
+        onClose={() => setShowDbModal(false)}
+        onConnected={(synced) => {
+          if (onRefresh) onRefresh();
+        }}
+      />
     </div>
   );
 }

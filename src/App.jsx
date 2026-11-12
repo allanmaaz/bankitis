@@ -4,14 +4,16 @@ import BalanceCard from './components/BalanceCard';
 import SendMoneyModal from './components/SendMoneyModal';
 import BeneficiariesModal from './components/BeneficiariesModal';
 import DirectoryModal from './components/DirectoryModal';
+import DatabaseSettingsModal from './components/DatabaseSettingsModal';
 import TransactionHistory from './components/TransactionHistory';
 import SpendingAnalytics from './components/SpendingAnalytics';
 import AuditLogView from './components/AuditLogView';
 import AuthTabs from './components/AuthTabs';
 import AdminLoginForm from './components/AdminLoginForm';
 import AdminClient from './components/AdminClient';
-import { loadDatabase } from './lib/bankingEngine';
-import { Building2 } from 'lucide-react';
+import { loadDatabase, syncDatabaseWithSupabase } from './lib/bankingEngine';
+import { getSupabaseCredentials } from './lib/supabaseClient';
+import { Building2, Database } from 'lucide-react';
 
 export default function App() {
   const [db, setDb] = useState(() => loadDatabase());
@@ -22,8 +24,11 @@ export default function App() {
   const [isSendOpen, setIsSendOpen] = useState(false);
   const [isBeneficiariesOpen, setIsBeneficiariesOpen] = useState(false);
   const [isDirectoryOpen, setIsDirectoryOpen] = useState(false);
+  const [isDbModalOpen, setIsDbModalOpen] = useState(false);
   const [prefillUpi, setPrefillUpi] = useState('');
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+
+  const { isConfigured: isCloudDb } = getSupabaseCredentials();
 
   const refreshDb = () => {
     setDb(loadDatabase());
@@ -33,6 +38,11 @@ export default function App() {
     if (window.location.pathname.includes('/admin') || window.location.search.includes('admin')) {
       setView('admin');
     }
+
+    // Try initial sync with cloud Supabase
+    syncDatabaseWithSupabase().then((synced) => {
+      if (synced) setDb(synced);
+    });
   }, []);
 
   const currentAccount = currentUser
@@ -106,7 +116,14 @@ export default function App() {
         </div>
 
         <footer className="pt-6 text-center text-xs text-slate-400 flex items-center justify-between max-w-sm sm:max-w-md mx-auto w-full">
-          <span>Bankitis</span>
+          <button
+            onClick={() => setIsDbModalOpen(true)}
+            className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 transition-colors cursor-pointer"
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${isCloudDb ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+            <span>{isCloudDb ? 'Cloud PostgreSQL' : 'Database: Local'}</span>
+          </button>
+
           <button
             onClick={() => setView('admin')}
             className="hover:text-slate-600 transition-colors cursor-pointer"
@@ -114,6 +131,15 @@ export default function App() {
             Admin Portal →
           </button>
         </footer>
+
+        <DatabaseSettingsModal
+          isOpen={isDbModalOpen}
+          onClose={() => setIsDbModalOpen(false)}
+          onConnected={(synced) => {
+            if (synced) setDb(synced);
+            else refreshDb();
+          }}
+        />
       </div>
     );
   }
@@ -252,9 +278,25 @@ export default function App() {
         }}
       />
 
-      <footer className="border-t border-slate-200 py-6 text-center text-xs text-slate-400 max-w-7xl mx-auto px-4 w-full">
-        Bankitis
+      <footer className="border-t border-slate-200 py-6 text-xs text-slate-400 max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
+        <span>Bankitis</span>
+        <button
+          onClick={() => setIsDbModalOpen(true)}
+          className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 transition-colors cursor-pointer"
+        >
+          <span className={`w-1.5 h-1.5 rounded-full ${isCloudDb ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+          <span>{isCloudDb ? 'Cloud PostgreSQL' : 'Database: Local'}</span>
+        </button>
       </footer>
+
+      <DatabaseSettingsModal
+        isOpen={isDbModalOpen}
+        onClose={() => setIsDbModalOpen(false)}
+        onConnected={(synced) => {
+          if (synced) setDb(synced);
+          else refreshDb();
+        }}
+      />
     </div>
   );
 }
