@@ -140,3 +140,4 @@ Transaction ..> TransactionStatus : state is
 Transaction ..> TransactionCategory : categorized as
 
 @enduml
+

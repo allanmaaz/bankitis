@@ -169,3 +169,4 @@ generateDiagramsPdf().catch((e) => {
   console.error('Error:', e);
   process.exit(1);
 });
+

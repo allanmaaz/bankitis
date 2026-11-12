@@ -59,3 +59,4 @@ Prisma --> Postgres : TCP / SQL with Row-Level Locking
 NotifService --> EmailService : Transactional Alerts
 
 @enduml
+

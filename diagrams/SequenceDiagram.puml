@@ -49,3 +49,4 @@ Action --> Client : 27. Return { success: true, referenceNumber, updatedBalance 
 Client --> Customer : 28. Render Success Receipt modal & update available balance
 
 @enduml
+
