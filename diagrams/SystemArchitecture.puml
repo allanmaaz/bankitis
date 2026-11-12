@@ -1,0 +1,61 @@
+@startuml SystemArchitecture
+title Team-9 Banking Management System - 3-Tier Enterprise System Architecture
+
+skinparam componentStyle rectangle
+skinparam roundcorner 10
+skinparam shadowing true
+
+package "Tier 1: Presentation Layer (Browser Client)" #AliceBlue {
+  [Customer Dashboard UI] as ClientDash
+  [Send Money (UPI Flow) UI] as ClientTransfer
+  [Beneficiary & Directory UI] as ClientBeneficiary
+  [Statement Exporters (PDF/CSV)] as ClientExport
+  [Executive Bank Admin Console (/admin)] as AdminConsole
+}
+
+package "Tier 2: Business Logic & Application Layer (Next.js Server)" #LightCyan {
+  [HTTP-Only Cookie Session Middleware] as AuthMiddleware
+  [Route Handlers & Server Actions] as ServerActions
+  [Core Banking Transfer Engine] as BankingEngine
+  [Admin Services & Account Freeze] as AdminService
+  [6-Digit PIN & Password Hasher (bcrypt)] as CryptoService
+  [Notification & Alert Dispatcher] as NotifService
+}
+
+package "Tier 3: Data & Persistence Layer (PostgreSQL Database)" #Lavender {
+  [Prisma ORM (Schema Engine)] as Prisma
+  database "PostgreSQL Relational DB" as Postgres {
+    folder "Relational Tables" {
+      [User Table]
+      [Account Table (SELECT FOR UPDATE)]
+      [Transaction Ledger Table]
+      [Beneficiary Table]
+      [Notification Table]
+      [Immutable AuditLog Table]
+    }
+  }
+}
+
+cloud "External Services" {
+  [Resend / SMTP Email Service] as EmailService
+}
+
+ClientDash --> AuthMiddleware : HTTPS / Session Cookie
+ClientTransfer --> AuthMiddleware : HTTPS / Signed Payload
+ClientBeneficiary --> AuthMiddleware : HTTPS
+ClientExport --> AuthMiddleware : HTTPS / Stream
+AdminConsole --> AuthMiddleware : HTTPS / Role: ADMIN
+
+AuthMiddleware --> ServerActions
+ServerActions --> BankingEngine
+ServerActions --> AdminService
+ServerActions --> CryptoService
+
+BankingEngine --> Prisma : Atomic Transaction ($transaction)
+AdminService --> Prisma : Update Status / Adjust Balance
+BankingEngine --> NotifService : Emit Event
+
+Prisma --> Postgres : TCP / SQL with Row-Level Locking
+NotifService --> EmailService : Transactional Alerts
+
+@enduml

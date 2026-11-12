@@ -1,0 +1,10 @@
+# Cloudflare Pages / Workers Configuration for Team-9 Banking Management System
+name = "team9-banking-system"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+NEXTAUTH_URL = "https://team9-banking-system.pages.dev"
+# For Cloudflare Edge, replace DATABASE_URL with your cloud-hosted PostgreSQL (Neon / Supabase)
+# DATABASE_URL = "postgresql://user:password@ep-cool-sample.us-east-2.aws.neon.tech/banking_db?sslmode=require"
+

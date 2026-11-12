@@ -1,0 +1,96 @@
+@startuml ActivityDiagram
+title Team-9 Banking Management System - UML Activity Diagram
+
+skinparam monochrome false
+skinparam roundcorner 10
+skinparam shadowing true
+skinparam ActivityBackgroundColor #FEFECE
+skinparam ActivityBorderColor #A80036
+
+start
+
+:Customer opens Money Transfer module;
+:Enter Recipient UPI ID (or select from Beneficiaries);
+
+:System queries database to resolve UPI ID;
+
+if (Recipient UPI exists and account is active?) then (No)
+  #Pink:Display error: "UPI ID does not resolve to an active account";
+  stop
+else (Yes)
+  if (Recipient is same as Sender account?) then (Yes)
+    #Pink:Display error: "Self-transfer is not permitted";
+    stop
+  else (No)
+    :Display verified recipient's full name (Question 42);
+  endif
+endif
+
+:Customer enters Transfer Amount (INR), Category, and Note;
+
+if (Amount >= 1.00 and Amount <= 100,000.00?) then (No)
+  #Pink:Display error: "Amount violates transaction bounds (₹1 - ₹1,00,000)";
+  stop
+else (Yes)
+endif
+
+if (Amount + Today's Utilized <= 200,000.00?) then (No)
+  #Pink:Display error: "Daily transfer ceiling of ₹2,00,000 exceeded";
+  stop
+else (Yes)
+endif
+
+if (Available Account Balance >= Transfer Amount?) then (No)
+  #Pink:Display error: "Insufficient account balance";
+  stop
+else (Yes)
+endif
+
+:Customer enters 6-Digit UPI / Transaction PIN;
+
+if (Is account currently in 15-minute PIN lockout?) then (Yes)
+  #Pink:Display error: "Account temporarily locked due to repeated PIN failures";
+  stop
+else (No)
+endif
+
+if (Verify 6-digit PIN with bcrypt hash?) then (Invalid PIN)
+  :Increment failed PIN counter;
+  if (Failed counter >= 3?) then (Yes)
+    :Set pinLockedUntil to Current Time + 15 minutes;
+    :Log SECURITY_LOCKOUT event to AuditLog;
+    #Pink:Display error: "Account locked for 15 minutes due to 3 failed attempts";
+    stop
+  else (No)
+    #Pink:Display error: "Incorrect UPI PIN entered";
+    stop
+  endif
+else (Valid PIN)
+  :Reset failed PIN counter to 0;
+endif
+
+partition "PostgreSQL ACID Transaction Block" {
+  :Sort sender and receiver account IDs deterministically;
+  :Acquire Row-Level Lock: SELECT id FROM Account WHERE id IN (...) FOR UPDATE;
+  :Re-verify sender balance under locked row;
+  :Update sender balance: balance = balance - amount;
+  :Update receiver balance: balance = balance + amount;
+  :Generate unique reference: TXN-YYYYMMDD-XXXXXX;
+  :Insert Transaction ledger row (status: COMPLETED);
+  :Insert AuditLog entry for transfer execution;
+  :Commit ACID transaction to disk;
+}
+
+fork
+  :Generate in-app DEBIT notification for sender;
+fork again
+  :Generate in-app CREDIT notification for receiver;
+fork again
+  :Dispatch transactional email alert;
+end fork
+
+:Display Payment Success Receipt with Reference ID;
+:Update available balance on Dashboard;
+
+stop
+@enduml

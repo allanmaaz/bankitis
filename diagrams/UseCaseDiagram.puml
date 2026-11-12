@@ -1,0 +1,61 @@
+@startuml UseCaseDiagram
+title Team-9 Banking Management System - UML Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam roundcorner 10
+skinparam shadowing true
+
+actor "Bank Customer" as Customer #LightSkyBlue
+actor "Bank Administrator" as Admin #MistyRose
+actor "Core Banking Engine" as System #HoneyDew
+
+rectangle "Team-9 Banking Management System" {
+  usecase "Authenticate / Sign In" as UC_Auth
+  usecase "View Available Balance & Details" as UC_Balance
+  usecase "Execute Money Transfer (UPI)" as UC_Transfer
+  usecase "Resolve Recipient Name (Question 42)" as UC_Resolve
+  usecase "Authorize with 6-Digit PIN" as UC_Pin
+  usecase "Manage Saved Beneficiaries" as UC_Beneficiary
+  usecase "Search Registered User Directory" as UC_Directory
+  usecase "View Transaction Passbook" as UC_History
+  usecase "Apply Advanced Filters" as UC_Filter
+  usecase "Download PDF & CSV Statements" as UC_Statement
+  usecase "View Spending Analytics Charts" as UC_Analytics
+  usecase "Receive In-App & Email Alerts" as UC_Notif
+
+  usecase "Monitor Bank Reserves & Total Volume" as UC_Admin_Metrics
+  usecase "Freeze / Unfreeze Customer Accounts" as UC_Admin_Freeze
+  usecase "Perform Balance Adjustments" as UC_Admin_Adjust
+  usecase "Clear PIN Security Lockout" as UC_Admin_Unlock
+  usecase "Inspect Central Transaction Ledger" as UC_Admin_Ledger
+  usecase "Review Central Audit Trail" as UC_Admin_Audit
+}
+
+Customer --> UC_Auth
+Customer --> UC_Balance
+Customer --> UC_Transfer
+Customer --> UC_Beneficiary
+Customer --> UC_Directory
+Customer --> UC_History
+Customer --> UC_Statement
+Customer --> UC_Analytics
+Customer --> UC_Notif
+
+UC_Transfer ..> UC_Resolve : <<include>>
+UC_Transfer ..> UC_Pin : <<include>>
+UC_History <.. UC_Filter : <<extend>>
+
+Admin --> UC_Auth
+Admin --> UC_Admin_Metrics
+Admin --> UC_Admin_Freeze
+Admin --> UC_Admin_Adjust
+Admin --> UC_Admin_Unlock
+Admin --> UC_Admin_Ledger
+Admin --> UC_Admin_Audit
+
+System --> UC_Resolve
+System --> UC_Pin
+System --> UC_Notif
+
+@enduml

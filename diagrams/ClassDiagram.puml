@@ -1,0 +1,142 @@
+@startuml ClassDiagram
+title Team-9 Banking Management System - UML Class Diagram
+
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam roundcorner 10
+skinparam shadowing true
+skinparam packageStyle rectangle
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  FROZEN
+  SUSPENDED
+}
+
+enum TransactionStatus {
+  COMPLETED
+  PENDING
+  FAILED
+  REVERSED
+}
+
+enum TransactionCategory {
+  TRANSFER
+  RENT
+  GROCERIES
+  UTILITIES
+  DINING
+  ENTERTAINMENT
+  SALARY
+  OTHER
+}
+
+class User {
+  - id: String
+  + fullName: String
+  + email: String
+  + phoneNumber: String
+  - passwordHash: String
+  + role: Role
+  + createdAt: DateTime
+  + updatedAt: DateTime
+  --
+  + register(data: UserRegisterDTO): User
+  + login(credentials: CredentialsDTO): SessionToken
+  + resetPassword(newPass: String): Boolean
+}
+
+class Account {
+  - id: String
+  + accountNumber: String
+  + upiId: String
+  - upiPinHash: String
+  + failedPinCount: Integer
+  + pinLockedUntil: DateTime
+  + balance: Decimal
+  + status: AccountStatus
+  - userId: String
+  --
+  + checkBalance(amount: Decimal): Boolean
+  + verifyPin(inputPin: String): Boolean
+  + lockPin(lockoutDuration: Integer): Void
+  + unlockPin(): Void
+  + updateBalance(amountDelta: Decimal): Decimal
+}
+
+class Beneficiary {
+  - id: String
+  + nickname: String
+  + beneficiaryUpi: String
+  + beneficiaryName: String
+  - ownerId: String
+  + createdAt: DateTime
+  --
+  + validateRecipient(): Boolean
+  + saveBeneficiary(): Beneficiary
+  + deleteBeneficiary(): Boolean
+}
+
+class Transaction {
+  - id: String
+  + referenceNumber: String
+  + idempotencyKey: String
+  + amount: Decimal
+  + fee: Decimal
+  + status: TransactionStatus
+  + category: TransactionCategory
+  + note: String
+  - senderAccountId: String
+  - receiverAccountId: String
+  + senderBalanceAfter: Decimal
+  + receiverBalanceAfter: Decimal
+  + createdAt: DateTime
+  --
+  + executeAtomicTransfer(): TransferReceipt
+  + generateReferenceNumber(): String
+}
+
+class Notification {
+  - id: String
+  + title: String
+  + message: String
+  + type: String
+  + isRead: Boolean
+  - userId: String
+  + createdAt: DateTime
+  --
+  + markAsRead(): Void
+  + sendEmailAlert(): Void
+}
+
+class AuditLog {
+  - id: String
+  + action: String
+  + ipAddress: String
+  + userAgent: String
+  + details: Json
+  - userId: String
+  + createdAt: DateTime
+  --
+  + logEvent(action: String, details: Json): Void
+}
+
+User "1" *-- "1..*" Account : owns
+User "1" *-- "0..*" Beneficiary : manages
+User "1" *-- "0..*" Notification : receives
+User "1" *-- "0..*" AuditLog : triggers
+
+Account "1" <-- "0..*" Transaction : debitAccount (sender)
+Account "1" <-- "0..*" Transaction : creditAccount (receiver)
+
+User ..> Role : classified by
+Account ..> AccountStatus : status is
+Transaction ..> TransactionStatus : state is
+Transaction ..> TransactionCategory : categorized as
+
+@enduml
