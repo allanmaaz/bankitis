@@ -84,31 +84,28 @@ export default function App() {
   // CUSTOMER VIEW (UNAUTHENTICATED)
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
-        <Navbar
-          currentUser={null}
-          onNavigateAdmin={() => setView('admin')}
-        />
-
-        <main className="max-w-md mx-auto px-4 py-12 sm:py-16 w-full">
-          <div className="text-center mb-8">
-            <div className="w-12 h-12 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center text-white mb-3">
+      <div className="min-h-screen bg-slate-50 flex flex-col justify-between px-4 py-8 sm:py-12">
+        <div className="flex-1 flex flex-col justify-center items-center w-full max-w-sm sm:max-w-md mx-auto">
+          <div className="text-center mb-6">
+            <div className="w-12 h-12 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center text-white mb-3 shadow-sm">
               <Building2 className="w-6 h-6" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Bankitis</h1>
-            <p className="text-xs text-slate-500 mt-1">Sign in to your account</p>
+            <p className="text-xs text-slate-500 mt-1">Online Banking & UPI Transfer</p>
           </div>
 
-          <AuthTabs
-            onAuthSuccess={(user) => {
-              setCurrentUser(user);
-              refreshDb();
-            }}
-            onNavigateAdmin={() => setView('admin')}
-          />
-        </main>
+          <div className="w-full">
+            <AuthTabs
+              onAuthSuccess={(user) => {
+                setCurrentUser(user);
+                refreshDb();
+              }}
+              onNavigateAdmin={() => setView('admin')}
+            />
+          </div>
+        </div>
 
-        <footer className="border-t border-slate-200 py-6 text-center text-xs text-slate-400 flex items-center justify-between max-w-md mx-auto px-4 w-full">
+        <footer className="pt-6 text-center text-xs text-slate-400 flex items-center justify-between max-w-sm sm:max-w-md mx-auto w-full">
           <span>Bankitis</span>
           <button
             onClick={() => setView('admin')}

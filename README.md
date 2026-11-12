@@ -7,15 +7,6 @@ A minimal, high-reliability Online Banking & UPI Transfer application built with
 
 ---
 
-## 👥 Engineering Team
-- **Mohammed Maaz**
-- **Devika**
-- **Vivek**
-- **Apoorva**
-- **imthebest**
-
----
-
 ## 🌟 Core Highlights
 
 - **Pure React Engine:** Client-side state machine with persistent storage, zero external runtime lock-ins, and instantaneous response times.
@@ -77,4 +68,4 @@ npx wrangler pages deploy dist --project-name bankitis
 
 ---
 
-*Bankitis • Engineered by Mohammed Maaz, Devika, Vivek, Apoorva, and imthebest.*
+*Bankitis Online Banking Application.*

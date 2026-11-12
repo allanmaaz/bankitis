@@ -2,7 +2,6 @@
 ================================================================================
   BANKITIS ONLINE BANKING SYSTEM - UML & ARCHITECTURE SPECIFICATIONS
   COMPATIBLE WITH: StarUML, Rational Rose, Visual Paradigm, PlantUML, PlantText
-  Team: Mohammed Maaz • Devika • Vivek • Apoorva • imthebest
 ================================================================================
 '/
 
@@ -395,11 +394,11 @@ participant Action as "Banking Engine" #LightGreen
 participant DB as "Banking State & Ledger" #LightCyan
 participant Notif as "Notification Dispatcher" #MistyRose
 
-Customer -> Client : 1. Enters recipient UPI ID (e.g. devika@bank)
-Client -> Action : 2. resolveRecipientAction("devika@bank")
-Action -> DB : 3. Lookup account by upiId = 'devika@bank'
+Customer -> Client : 1. Enters recipient UPI ID (e.g. recipient@bank)
+Client -> Action : 2. resolveRecipientAction("recipient@bank")
+Action -> DB : 3. Lookup account by upiId = 'recipient@bank'
 DB --> Action : 4. Returns Account and User details
-Action --> Client : 5. Return { success: true, recipientName: "Devika" }
+Action --> Client : 5. Return { success: true, recipientName: "Recipient Account" }
 Client --> Customer : 6. Displays verified recipient badge
 
 Customer -> Client : 7. Enters Amount, Category & Note

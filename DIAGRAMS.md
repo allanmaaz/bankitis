@@ -1,6 +1,5 @@
 # Software Engineering Architecture & UML Specification
 ## Bankitis: Online Banking System
-**Team Members:** Mohammed Maaz, Devika, Vivek, Apoorva, imthebest
 
 This document contains the official **System Architecture Diagram**, **UML Class Diagram**, **UML Activity Diagram**, **UML Use Case Diagram**, and **UML Sequence Diagram** required for academic, lab viva, and technical evaluation.
 
@@ -344,11 +343,11 @@ sequenceDiagram
     participant DB as PostgreSQL (Prisma)
     participant Notif as Alert Dispatcher
 
-    Customer->>UI: Enter Recipient UPI ID (e.g. devika@bank)
-    UI->>API: resolveRecipientAction("devika@bank")
+    Customer->>UI: Enter Recipient UPI ID (e.g. recipient@bank)
+    UI->>API: resolveRecipientAction("recipient@bank")
     API->>DB: Query Account by upiId
     DB-->>API: Return account details & user name
-    API-->>UI: Return { success: true, recipientName: "Devika" }
+    API-->>UI: Return { success: true, recipientName: "Recipient Account" }
     UI-->>Customer: Display verified name badge in green
 
     Customer->>UI: Enter Amount (₹500), Category (Dining), and Note
@@ -356,7 +355,7 @@ sequenceDiagram
     UI->>UI: Validate amount (₹1 ≤ amt ≤ ₹1,00,000, daily ≤ ₹2,00,000)
     Customer->>UI: Input 6-Digit UPI PIN & Click "Confirm & Pay"
 
-    UI->>API: transferMoneyAction(senderId, "devika@bank", 500, pin, category, note)
+    UI->>API: transferMoneyAction(senderId, "recipient@bank", 500, pin, category, note)
     
     rect rgb(240, 248, 255)
     Note over API,DB: Atomic Database Transaction (ACID)
@@ -378,5 +377,5 @@ sequenceDiagram
 
 ---
 
-*Authored by Bankitis Engineering Team: Mohammed Maaz, Devika, Vivek, Apoorva, imthebest.*
+*Bankitis Online Banking Architecture Specification.*
 

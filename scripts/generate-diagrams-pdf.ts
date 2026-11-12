@@ -24,7 +24,7 @@ async function generateDiagramsPdf() {
   doc.text('UML DIAGRAMS & SYSTEM ARCHITECTURE SPECIFICATION', 14, 24);
 
   doc.setFontSize(8);
-  doc.text('Team: Mohammed Maaz • Devika • Vivek • Apoorva • imthebest', 14, 31);
+  doc.text('Specification Document • StarUML / Rational Rose / PlantUML Standard', 14, 31);
 
   // Section 1: Overview
   doc.setTextColor(15, 23, 42);
@@ -99,9 +99,9 @@ async function generateDiagramsPdf() {
   doc.setFont('helvetica', 'normal');
 
   const activitySteps = [
-    ['Step 1: Recipient Input', 'Customer inputs target UPI ID (e.g. devika@bank) or picks from saved beneficiaries.'],
+    ['Step 1: Recipient Input', 'Customer inputs target UPI ID (e.g. recipient@bank) or picks from saved beneficiaries.'],
     ['Step 2: Recipient Resolution', 'Asynchronous query checks if account exists and is ACTIVE. Prevents self-transfer.'],
-    ['Step 3: Name Verification', 'Compliance verification: Displays verified recipient name (Devika) in real time.'],
+    ['Step 3: Name Verification', 'Compliance verification: Displays verified recipient name in real time.'],
     ['Step 4: Limits Validation', 'Validates: Amount >= INR 1.00, Amount <= INR 1,00,000, Daily utilized <= INR 2,00,000.'],
     ['Step 5: Balance Check', 'Verifies available balance >= transfer amount. Rejects if funds insufficient.'],
     ['Step 6: PIN Security Check', 'Customer enters 6-digit PIN. Salted validation. 3 failed attempts lock account for 15 mins.'],

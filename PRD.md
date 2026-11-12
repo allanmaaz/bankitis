@@ -3,7 +3,6 @@
 
 **Document Version:** 1.0.0  
 **Project:** Bankitis Online Banking System  
-**Team Members:** Mohammed Maaz, Devika, Vivek, Apoorva, imthebest  
 **Status:** Approved / Ready for Implementation  
 **Last Updated:** November 2026  
 **Target Platform:** Full-Stack Web Application (Mobile-Responsive Desktop & Web)
@@ -65,7 +64,7 @@ graph TD
 ## 3. User Personas & Permissions
 
 ### 3.1 Personas
-1. **Registered Customer (Mohammed Maaz / Devika):**
+1. **Registered Customer:**
    - Accesses dashboard with verified credentials.
    - Manages personal bank balance (pre-funded or initial simulated deposit).
    - Manages saved beneficiaries (manual UPI entry or directory search).
@@ -93,7 +92,7 @@ graph TD
 
 ### FR-3: Beneficiary Management
 - **FR-3.1:** **Adding Methods:**
-  1. *Manual Entry:* User inputs target UPI ID (e.g. `devika@bank`).
+  1. *Manual Entry:* User inputs target UPI ID (e.g. `recipient@bank`).
   2. *Registered Directory:* User browses or searches the internal directory of registered application users.
 - **FR-3.2:** **Automatic Identity Verification:** When a UPI ID is entered, the system asynchronously queries the database and displays the recipient's verified full name before allowing the beneficiary to be saved.
 - **FR-3.3:** **No PIN Required to Save:** Adding a beneficiary does not require entering the transaction PIN; PIN is required only when executing funds transfers.
@@ -277,7 +276,7 @@ model User {
 model Account {
   id              String         @id @default(cuid())
   accountNumber   String         @unique
-  upiId           String         @unique // e.g. maaz@bank
+  upiId           String         @unique // e.g. user@bank
   upiPinHash      String         // 6-digit hashed PIN
   failedPinCount  Int            @default(0)
   pinLockedUntil  DateTime?
@@ -368,14 +367,14 @@ model AuditLog {
 
 ### 7.1 Resolve Recipient UPI
 - **Endpoint:** `POST /api/transfer/resolve-recipient`
-- **Request Body:** `{ "upiId": "devika@bank" }`
+- **Request Body:** `{ "upiId": "recipient@bank" }`
 - **Response (200):**
   ```json
   {
     "success": true,
     "data": {
-      "upiId": "devika@bank",
-      "recipientName": "Devika",
+      "upiId": "recipient@bank",
+      "recipientName": "Recipient Account",
       "isSelf": false
     }
   }
@@ -387,7 +386,7 @@ model AuditLog {
 - **Request Body:**
   ```json
   {
-    "recipientUpi": "devika@bank",
+    "recipientUpi": "recipient@bank",
     "amount": 2500.00,
     "upiPin": "123456",
     "category": "DINING",
@@ -402,7 +401,7 @@ model AuditLog {
     "data": {
       "referenceNumber": "TXN-20261111-9F42B1",
       "amount": 2500.00,
-      "recipientName": "Devika",
+      "recipientName": "Recipient Account",
       "timestamp": "2026-11-11T23:55:00.000Z",
       "newBalance": 47500.00
     }
@@ -427,7 +426,7 @@ flowchart LR
    - Configure clean UI components with accessible modals.
    - Set up core banking state engine.
    - Implement user credentials and 6-digit PIN setup.
-   - Seed pre-populated demo users (`maaz@bank`, `devika@bank`, `vivek@bank`, `apoorva@bank`, `imthebest@bank`).
+   - Seed pre-populated demo users (`user@bank`, `recipient@bank`).
 
 2. **Milestone 2: Core Banking Engine & Atomic Transfers (Day 2)**
    - Implement row-level locked transfer transaction logic in Prisma (`$transaction`).
