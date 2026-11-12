@@ -1,7 +1,15 @@
 import React from 'react';
-import { Building2, Shield, LogOut, Bell, User } from 'lucide-react';
+import { Building2, Shield, LogOut, Bell, Database } from 'lucide-react';
 
-export default function Navbar({ currentUser, onLogout, onNavigateAdmin, onOpenNotifications, unreadCount = 0 }) {
+export default function Navbar({
+  currentUser,
+  onLogout,
+  onNavigateAdmin,
+  onOpenNotifications,
+  unreadCount = 0,
+  onOpenDbSettings,
+  isCloudDb,
+}) {
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -25,6 +33,21 @@ export default function Navbar({ currentUser, onLogout, onNavigateAdmin, onOpenN
 
           {currentUser && (
             <>
+              {onOpenDbSettings && (
+                <button
+                  onClick={onOpenDbSettings}
+                  className="relative p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+                  title={isCloudDb ? 'Cloud PostgreSQL Connected' : 'Database Settings'}
+                >
+                  <Database className="w-4 h-4" />
+                  <span
+                    className={`absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full ${
+                      isCloudDb ? 'bg-emerald-500' : 'bg-slate-400'
+                    }`}
+                  ></span>
+                </button>
+              )}
+
               <button
                 onClick={onOpenNotifications}
                 className="relative p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"

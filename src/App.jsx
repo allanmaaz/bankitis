@@ -94,8 +94,8 @@ export default function App() {
   // CUSTOMER VIEW (UNAUTHENTICATED)
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col justify-between px-4 py-8 sm:py-12">
-        <div className="flex-1 flex flex-col justify-center items-center w-full max-w-sm sm:max-w-md mx-auto">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-sm sm:max-w-md mx-auto">
           <div className="text-center mb-6">
             <div className="w-12 h-12 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center text-white mb-3 shadow-sm">
               <Building2 className="w-6 h-6" />
@@ -114,23 +114,6 @@ export default function App() {
             />
           </div>
         </div>
-
-        <footer className="pt-6 text-center text-xs text-slate-400 flex items-center justify-between max-w-sm sm:max-w-md mx-auto w-full">
-          <button
-            onClick={() => setIsDbModalOpen(true)}
-            className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 transition-colors cursor-pointer"
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${isCloudDb ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
-            <span>{isCloudDb ? 'Cloud PostgreSQL' : 'Database: Local'}</span>
-          </button>
-
-          <button
-            onClick={() => setView('admin')}
-            className="hover:text-slate-600 transition-colors cursor-pointer"
-          >
-            Admin Portal →
-          </button>
-        </footer>
 
         <DatabaseSettingsModal
           isOpen={isDbModalOpen}
@@ -153,6 +136,8 @@ export default function App() {
         onNavigateAdmin={() => setView('admin')}
         onOpenNotifications={() => setShowNotifDropdown(!showNotifDropdown)}
         unreadCount={unreadNotifs}
+        onOpenDbSettings={() => setIsDbModalOpen(true)}
+        isCloudDb={isCloudDb}
       />
 
       {/* Notifications Drawer */}
@@ -277,17 +262,6 @@ export default function App() {
           setIsSendOpen(true);
         }}
       />
-
-      <footer className="border-t border-slate-200 py-6 text-xs text-slate-400 max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
-        <span>Bankitis</span>
-        <button
-          onClick={() => setIsDbModalOpen(true)}
-          className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 transition-colors cursor-pointer"
-        >
-          <span className={`w-1.5 h-1.5 rounded-full ${isCloudDb ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
-          <span>{isCloudDb ? 'Cloud PostgreSQL' : 'Database: Local'}</span>
-        </button>
-      </footer>
 
       <DatabaseSettingsModal
         isOpen={isDbModalOpen}
